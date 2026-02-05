@@ -1,0 +1,43 @@
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <div class="footer__brand"><%= site.brand.name %></div>
+      <p class="muted">
+        <%= site.brand.note %>
+      </p>
+      <div class="chips">
+        <span class="chip">Подбор по проекту</span>
+        <span class="chip">Доставка</span>
+        <span class="chip">Документы</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer__title">Разделы</div>
+      <ul class="footer__links">
+        <li><a href="/catalog">Каталог</a></li>
+        <li><a href="/gallery">Галерея</a></li>
+        <li><a href="/delivery">Доставка</a></li>
+        <li><a href="/contacts">Контакты</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer__title">Контакты</div>
+      <ul class="footer__links">
+        <% site.contacts.phones.forEach(p => { %>
+          <li><a href="tel:<%= p.value.replace(/[^0-9+]/g,'') %>"><%= p.value %></a> <span class="muted">— <%= p.label %></span></li>
+        <% }) %>
+        <li><a href="mailto:<%= site.contacts.email %>"><%= site.contacts.email %></a></li>
+      </ul>
+      <p class="muted small">
+        <%= site.contacts.worktime.join(' · ') %>
+      </p>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <span class="muted small">© <%= new Date().getFullYear() %> <%= site.brand.name %>. Все права защищены.</span>
+    <span class="muted small">Сделано для демо · Node.js + EJS</span>
+  </div>
+</footer>

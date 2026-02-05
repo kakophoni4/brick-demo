@@ -1,0 +1,35 @@
+<article class="card product">
+  <a class="product__media" href="/catalog/<%= p.slug %>">
+    <img src="<%= p.image %>" alt="<%= p.title %>" loading="lazy">
+    <% if (p.isBestseller) { %><span class="badge">Хит</span><% } %>
+  </a>
+
+  <div class="product__body">
+    <div class="product__meta">
+      <span class="pill-mini"><%= p.category %></span>
+      <% if (p.format && p.format !== '—') { %><span class="pill-mini">Формат: <%= p.format %></span><% } %>
+    </div>
+
+    <h3 class="product__title">
+      <a href="/catalog/<%= p.slug %>"><%= p.title %></a>
+    </h3>
+
+    <p class="product__short"><%= p.short %></p>
+
+    <div class="product__bottom">
+      <div>
+        <div class="price">
+          <% if (p.priceRub) { %>
+            <span class="price__value"><%= p.priceRub.toLocaleString('ru-RU') %> ₽</span>
+            <span class="price__unit">/ <%= p.unit %></span>
+          <% } else { %>
+            <span class="price__value">Цена по запросу</span>
+          <% } %>
+        </div>
+        <div class="muted small"><%= p.availability %></div>
+      </div>
+
+      <a class="btn btn--ghost" href="/catalog/<%= p.slug %>">Подробнее</a>
+    </div>
+  </div>
+</article>

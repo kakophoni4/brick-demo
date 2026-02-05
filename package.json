@@ -1,0 +1,18 @@
+{
+  "name": "brick-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Демо-сайт кирпича и керамики (Node.js + Express + EJS)",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
+    "helmet": "^7.1.0"
+  }
+}

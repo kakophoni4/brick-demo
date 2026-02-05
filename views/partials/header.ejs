@@ -1,0 +1,33 @@
+<header class="header">
+  <div class="container header__inner">
+    <a class="brand" href="/">
+      <span class="brand__logo" aria-hidden="true"></span>
+      <span class="brand__text">
+        <span class="brand__name"><%= site.brand.name %></span>
+        <span class="brand__tag"><%= site.brand.tagline %></span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Основное меню">
+      <button class="nav__toggle" type="button" data-nav-toggle aria-label="Открыть меню">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav__list" data-nav-list>
+        <li><a class="nav__link <%= currentPath==='/'?'is-active':'' %>" href="/">Главная</a></li>
+        <li><a class="nav__link <%= currentPath.startsWith('/catalog')?'is-active':'' %>" href="/catalog">Каталог</a></li>
+        <li><a class="nav__link <%= currentPath==='/gallery'?'is-active':'' %>" href="/gallery">Галерея</a></li>
+        <li><a class="nav__link <%= currentPath==='/about'?'is-active':'' %>" href="/about">О нас</a></li>
+        <li><a class="nav__link <%= currentPath==='/delivery'?'is-active':'' %>" href="/delivery">Доставка</a></li>
+        <li><a class="nav__link <%= currentPath==='/contacts'?'is-active':'' %>" href="/contacts">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__cta">
+      <a class="pill" href="tel:<%= site.contacts.phones[0].value.replace(/[^0-9+]/g,'') %>">
+        <span class="pill__title">Позвонить</span>
+        <span class="pill__value"><%= site.contacts.phones[0].value %></span>
+      </a>
+    </div>
+  </div>
+</header>

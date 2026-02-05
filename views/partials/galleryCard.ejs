@@ -1,0 +1,13 @@
+<article class="card gcard">
+  <a class="gcard__media" href="<%= item.image %>" target="_blank" rel="noreferrer">
+    <img src="<%= item.image %>" alt="<%= item.title %>" loading="lazy">
+  </a>
+  <div class="gcard__body">
+    <div class="gcard__title"><%= item.title %></div>
+    <div class="gcard__tags">
+      <% item.tags.forEach(t => { %>
+        <span class="pill-mini"><%= t %></span>
+      <% }) %>
+    </div>
+  </div>
+</article>

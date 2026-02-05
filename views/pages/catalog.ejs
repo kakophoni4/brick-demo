@@ -1,0 +1,79 @@
+
+<div class="container">
+  <%- include('../partials/breadcrumbs', { crumbs: [{ title: 'Каталог', href: '/catalog' }] }) %>
+
+  <section class="pagehead">
+    <h1 class="h1">Каталог</h1>
+    <p class="muted">
+      Большой демо-каталог: много позиций, аккуратная сетка, фото не выходят за рамки.
+      Есть поиск и фильтры, всё адаптивно.
+    </p>
+  </section>
+
+  <section class="section section--tight">
+    <form class="card filters" method="get" action="/catalog">
+      <div class="filters__row">
+        <label class="field">
+          <span class="field__label">Поиск</span>
+          <input name="q" value="<%= filters.q %>" type="search" maxlength="80" placeholder="Например: баварская, 380 мм, графит..." />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Категория</span>
+          <select name="cat">
+            <option value="">Все</option>
+            <% categories.forEach(c => { %>
+              <option value="<%= c %>" <%= filters.cat===c?'selected':'' %>><%= c %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Цвет</span>
+          <select name="color">
+            <option value="">Любой</option>
+            <% ['графит','шоколад','терракота','айвори','солома','красный','серый'].forEach(v => { %>
+              <option value="<%= v %>" <%= filters.color===v?'selected':'' %>><%= v %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Формат</span>
+          <select name="format">
+            <option value="">Любой</option>
+            <% ['0,7NF','1NF','1,4NF','2,1NF','10,7NF','12,4NF','5,7NF'].forEach(v => { %>
+              <option value="<%= v %>" <%= filters.format===v?'selected':'' %>><%= v %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Сортировка</span>
+          <select name="price">
+            <option value="">По умолчанию</option>
+            <option value="low" <%= filters.price==='low'?'selected':'' %>>Цена: по возрастанию</option>
+            <option value="high" <%= filters.price==='high'?'selected':'' %>>Цена: по убыванию</option>
+          </select>
+        </label>
+
+        <div class="filters__actions">
+          <button class="btn" type="submit">Применить</button>
+          <a class="btn btn--ghost" href="/catalog">Сбросить</a>
+        </div>
+      </div>
+
+      <div class="muted small">
+        Найдено позиций: <strong><%= items.length %></strong>
+      </div>
+    </form>
+  </section>
+
+  <section class="section section--tight">
+    <div class="grid">
+      <% items.forEach(p => { %>
+        <%- include('../partials/productCard', { p }) %>
+      <% }) %>
+    </div>
+  </section>
+</div>

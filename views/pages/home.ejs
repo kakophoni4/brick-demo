@@ -1,0 +1,209 @@
+
+<section class="hero">
+  <div class="container hero__grid">
+    <div class="hero__content">
+      <h1 class="h1">Кирпич и керамика для дома, забора и фасада</h1>
+      <p class="lead">
+        Подберём материал под проект, рассчитаем количество, предложим варианты по бюджету и внешнему виду.
+        Доставка на объект, самовывоз, документы.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn" href="/catalog">Открыть каталог</a>
+        <button class="btn btn--ghost" type="button" data-open-lead data-source="Главная / Подбор">
+          Подбор по проекту
+        </button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat__num">1000+</div>
+          <div class="stat__txt">вариантов оттенков и фактур (демо)</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">24–72 ч</div>
+          <div class="stat__txt">типовые сроки доставки со склада</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">10+ лет</div>
+          <div class="stat__txt">опыт и комплектация объектов</div>
+        </div>
+      </div>
+
+      <div class="chips hero__chips">
+        <span class="chip">Кирпич облицовочный</span>
+        <span class="chip">Тёплая керамика</span>
+        <span class="chip">Цветные растворы</span>
+        <span class="chip">Клинкерные ступени</span>
+      </div>
+    </div>
+
+    <div class="hero__media" aria-hidden="true">
+      <img src="/public/assets/hero/hero-1.jpg" alt="" />
+      <div class="hero__glass">
+        <div class="hero__glassTitle">Быстрый расчёт</div>
+        <div class="muted small">
+          Пришлите проект/эскиз или размеры — посчитаем кирпич/блоки, добор, раствор и логистику.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="h2">Популярные категории</h2>
+      <p class="muted">Ничего лишнего: быстро выбрать направление и перейти к товарам.</p>
+    </div>
+
+    <div class="catgrid">
+      <% categories.forEach(c => { %>
+        <a class="card cat" href="/catalog?cat=<%= encodeURIComponent(c) %>">
+          <div class="cat__title"><%= c %></div>
+          <div class="cat__desc muted">Смотреть позиции →</div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="h2">Хиты и рекомендуемые позиции</h2>
+      <p class="muted">Подборка для демо: много карточек, аккуратная сетка, ничего не “плывёт”.</p>
+    </div>
+
+    <div class="grid">
+      <% bestsellers.forEach(p => { %>
+        <%- include('../partials/productCard', { p }) %>
+      <% }) %>
+    </div>
+
+    <div class="section__foot">
+      <a class="btn btn--ghost" href="/catalog">Перейти в полный каталог</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="h2">Как мы работаем</h2>
+      <p class="muted">Понятные шаги — как на лучших примерах: просто, структурно, без перегруза.</p>
+    </div>
+
+    <div class="steps">
+      <div class="card step">
+        <div class="step__num">1</div>
+        <div class="step__title">Выбор и консультация</div>
+        <p class="muted">Подберём оттенок/формат, покажем похожие объекты, предупредим о нюансах кладки.</p>
+      </div>
+      <div class="card step">
+        <div class="step__num">2</div>
+        <div class="step__title">Расчёт количества</div>
+        <p class="muted">Считаем по проекту или размерам: кирпич/блоки, добор, раствор, запас.</p>
+      </div>
+      <div class="card step">
+        <div class="step__num">3</div>
+        <div class="step__title">Оплата и документы</div>
+        <p class="muted">Физ/юр лица. Счёт, договор, закрывающие документы. Сертификаты по запросу.</p>
+      </div>
+      <div class="card step">
+        <div class="step__num">4</div>
+        <div class="step__title">Доставка на объект</div>
+        <p class="muted">Подбор машины под объём и подъезд. Самовывоз возможен. Разгрузка — по условиям.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="section__head">
+      <h2 class="h2">Галерея работ</h2>
+      <p class="muted">Фото объектов — помогает выбрать оттенок и фактуру “вживую”.</p>
+    </div>
+
+    <div class="gallerygrid">
+      <% galleryPreview.forEach(item => { %>
+        <%- include('../partials/galleryCard', { item }) %>
+      <% }) %>
+    </div>
+
+    <div class="section__foot">
+      <a class="btn btn--ghost" href="/gallery">Открыть всю галерею</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container cta">
+    <div class="cta__text">
+      <h2 class="h2">Нужен быстрый расчёт под проект?</h2>
+      <p class="muted">
+        Оставьте контакты — перезвоним и уточним задачи. В демо заявка “принята” без отправки куда-либо.
+      </p>
+    </div>
+
+    <form class="card form" method="post" action="/api/lead" data-lead-form>
+      <div class="form__row">
+        <label class="field">
+          <span class="field__label">Имя *</span>
+          <input name="name" type="text" autocomplete="name" required maxlength="60" placeholder="Иван" />
+        </label>
+        <label class="field">
+          <span class="field__label">Телефон *</span>
+          <input name="phone" type="tel" autocomplete="tel" required maxlength="30" placeholder="+7 (___) ___-__-__" />
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field__label">Комментарий</span>
+        <textarea name="message" rows="3" maxlength="600" placeholder="Например: дом 9×10, хочу баварскую кладку и тёплый блок."></textarea>
+      </label>
+
+      <input type="hidden" name="source" value="Главная / форма" />
+      <button class="btn" type="submit">Отправить заявку</button>
+
+      <p class="muted small">
+        Нажимая “Отправить”, вы соглашаетесь с политикой обработки данных (демо-текст).
+      </p>
+
+      <div class="form__result" data-form-result aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
+<!-- Модалка (общая) -->
+<div class="modal" data-modal hidden>
+  <div class="modal__overlay" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-label="Заявка">
+    <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">×</button>
+    <h3 class="h3">Подбор и расчёт (демо)</h3>
+    <p class="muted">Оставьте контакты — менеджер уточнит задачу и предложит 2–3 варианта материалов.</p>
+
+    <form class="card form" method="post" action="/api/lead" data-lead-form>
+      <label class="field">
+        <span class="field__label">Имя *</span>
+        <input name="name" type="text" required maxlength="60" placeholder="Имя" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Телефон *</span>
+        <input name="phone" type="tel" required maxlength="30" placeholder="+7 ..." />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Что строите?</span>
+        <textarea name="message" rows="3" maxlength="600" placeholder="Дом/забор/баня, размеры, желаемый цвет, сроки..."></textarea>
+      </label>
+
+      <input type="hidden" name="source" value="Модалка / подбор" data-modal-source />
+      <button class="btn" type="submit">Отправить</button>
+
+      <div class="form__result" data-form-result aria-live="polite"></div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+
+<div class="container">
+  <%- include('../partials/breadcrumbs', { crumbs: [{ title: 'Галерея', href: '/gallery' }] }) %>
+
+  <section class="pagehead">
+    <h1 class="h1">Галерея объектов</h1>
+    <p class="muted">Фильтруйте по типу объекта. Сетка не ломается на мобильных.</p>
+  </section>
+
+  <section class="section section--tight">
+    <div class="tagbar">
+      <a class="pill-mini <%= !activeTag ? 'is-active' : '' %>" href="/gallery">Все</a>
+      <% galleryTags.forEach(t => { %>
+        <a class="pill-mini <%= activeTag===t ? 'is-active' : '' %>" href="/gallery?tag=<%= encodeURIComponent(t) %>"><%= t %></a>
+      <% }) %>
+    </div>
+
+    <div class="gallerygrid">
+      <% items.forEach(item => { %>
+        <%- include('../partials/galleryCard', { item }) %>
+      <% }) %>
+    </div>
+  </section>
+</div>

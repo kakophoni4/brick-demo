@@ -1,0 +1,114 @@
+
+<div class="container">
+  <%- include('../partials/breadcrumbs', { crumbs: [
+    { title: 'Каталог', href: '/catalog' },
+    { title: product.title, href: `/catalog/${product.slug}` }
+  ] }) %>
+
+  <section class="productpage">
+    <div class="productpage__grid">
+      <div class="card productmedia">
+        <div class="productmedia__img">
+          <img src="<%= product.image %>" alt="<%= product.title %>">
+          <% if (product.isBestseller) { %><span class="badge">Хит</span><% } %>
+        </div>
+        <div class="productmedia__thumbs">
+          <% product.gallery.slice(0, 5).forEach(img => { %>
+            <a class="thumb" href="<%= img %>" target="_blank" rel="noreferrer">
+              <img src="<%= img %>" alt="">
+            </a>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="card pad">
+        <h1 class="h2"><%= product.title %></h1>
+
+        <div class="chips">
+          <span class="chip"><%= product.category %></span>
+          <% if (product.format && product.format !== '—') { %><span class="chip">Формат: <%= product.format %></span><% } %>
+          <% if (product.color) { %><span class="chip">Цвет: <%= product.color %></span><% } %>
+        </div>
+
+        <p class="lead"><%= product.short %></p>
+
+        <div class="pricebox">
+          <div class="price">
+            <% if (product.priceRub) { %>
+              <span class="price__value"><%= product.priceRub.toLocaleString('ru-RU') %> ₽</span>
+              <span class="price__unit">/ <%= product.unit %></span>
+            <% } else { %>
+              <span class="price__value">Цена по запросу</span>
+            <% } %>
+          </div>
+          <div class="muted small"><%= product.availability %></div>
+        </div>
+
+        <div class="actionsrow">
+          <button class="btn" type="button" data-open-lead data-source="Товар: <%= product.title %>">
+            Узнать стоимость / наличие
+          </button>
+          <a class="btn btn--ghost" href="/catalog">Назад в каталог</a>
+        </div>
+
+        <hr class="hr"/>
+
+        <h2 class="h3">Описание</h2>
+        <p class="muted"><%= product.description %></p>
+
+        <h2 class="h3">Характеристики</h2>
+        <div class="specs">
+          <% product.specs.forEach(row => { %>
+            <div class="specs__row">
+              <div class="specs__k"><%= row[0] %></div>
+              <div class="specs__v"><%= row[1] %></div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="section__head">
+      <h2 class="h2">Похожие товары</h2>
+      <p class="muted">Подборка по категории — удобно для сравнения.</p>
+    </div>
+    <div class="grid">
+      <% related.forEach(p => { %>
+        <%- include('../partials/productCard', { p }) %>
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<div class="modal" data-modal hidden>
+  <div class="modal__overlay" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-label="Заявка">
+    <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">×</button>
+    <h3 class="h3">Запрос по товару</h3>
+    <p class="muted">Оставьте контакты — уточним наличие, цену и доставку.</p>
+
+    <form class="card form" method="post" action="/api/lead" data-lead-form>
+      <label class="field">
+        <span class="field__label">Имя *</span>
+        <input name="name" type="text" required maxlength="60" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Телефон *</span>
+        <input name="phone" type="tel" required maxlength="30" />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Комментарий</span>
+        <textarea name="message" rows="3" maxlength="600">Интересует: <%= product.title %></textarea>
+      </label>
+
+      <input type="hidden" name="source" value="Карточка товара" data-modal-source />
+      <button class="btn" type="submit">Отправить</button>
+
+      <div class="form__result" data-form-result aria-live="polite"></div>
+    </form>
+  </div>
+</div>

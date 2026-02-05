@@ -1,0 +1,87 @@
+
+<div class="container">
+  <%- include('../partials/breadcrumbs', { crumbs: [{ title: 'Контакты', href: '/contacts' }] }) %>
+
+  <section class="pagehead">
+    <h1 class="h1">Контакты</h1>
+    <p class="muted">Демо-страница с объемным, но структурным контентом + форма без “наездов”.</p>
+  </section>
+
+  <section class="section section--tight">
+    <div class="twocol">
+      <div class="card pad">
+        <h2 class="h3">Телефоны и почта</h2>
+        <ul class="list">
+          <% site.contacts.phones.forEach(p => { %>
+            <li><strong><%= p.label %>:</strong> <a href="tel:<%= p.value.replace(/[^0-9+]/g,'') %>"><%= p.value %></a></li>
+          <% }) %>
+          <li><strong>Email:</strong> <a href="mailto:<%= site.contacts.email %>"><%= site.contacts.email %></a></li>
+        </ul>
+
+        <h2 class="h3">График работы</h2>
+        <p class="muted"><%= site.contacts.worktime.join(' · ') %></p>
+
+        <h2 class="h3">Адреса</h2>
+        <div class="addr">
+          <% site.contacts.addresses.forEach(a => { %>
+            <div class="addr__item">
+              <div class="addr__title"><%= a.title %></div>
+              <div class="muted"><%= a.line1 %></div>
+              <div class="muted"><%= a.line2 %></div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="callout">
+          <div class="callout__title">Как быстрее получить ответ</div>
+          <div class="muted">
+            Для расчёта полезно указать: что строите, размеры/проект, желаемый цвет/фактуру, сроки, адрес доставки.
+            Тогда мы сразу предложим несколько вариантов и точнее посчитаем логистику.
+          </div>
+        </div>
+      </div>
+
+      <div class="card pad">
+        <h2 class="h3">Написать нам</h2>
+
+        <form class="form" method="post" action="/api/lead" data-lead-form>
+          <div class="form__row">
+            <label class="field">
+              <span class="field__label">Имя *</span>
+              <input name="name" type="text" required maxlength="60" />
+            </label>
+
+            <label class="field">
+              <span class="field__label">Телефон *</span>
+              <input name="phone" type="tel" required maxlength="30" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="field__label">Сообщение</span>
+            <textarea name="message" rows="6" maxlength="800" placeholder="Опишите задачу: фасад/дом/забор, стиль, цвет, объем, сроки..."></textarea>
+          </label>
+
+          <input type="hidden" name="source" value="Контакты / форма" />
+          <button class="btn" type="submit">Отправить</button>
+
+          <p class="muted small">
+            В демо заявка сохраняется только в ответе сервера (без отправки в почту/CRM).
+          </p>
+
+          <div class="form__result" data-form-result aria-live="polite"></div>
+        </form>
+
+        <hr class="hr"/>
+
+        <h2 class="h3">Карта</h2>
+        <div class="mapbox" aria-label="Карта (заглушка)">
+          <div class="muted">
+            Здесь можно вставить Яндекс.Карты/2ГИС iframe.  
+            Размер блока фиксирован, ничего не “вылезает”.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
