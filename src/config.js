@@ -3,35 +3,38 @@
 const path = require('path');
 const fs = require('fs');
 
-// Папки с фото: ищем в brick-demo и в родителе brick-demo
-const rootDemo = path.join(__dirname, '..');       // brick-demo
-const rootParent = path.join(__dirname, '..', '..');
-function resolveDir(name) {
-  const inDemo = path.join(rootDemo, name);
-  const inParent = path.join(rootParent, name);
-  if (fs.existsSync(inDemo)) return inDemo;
-  if (fs.existsSync(inParent)) return inParent;
-  return inParent;
-}
-const OBJECTS_PATH = resolveDir('обьекты абк');
-const DEALER_PATH = resolveDir('акбарс керамик для дилеров');
-const OBJECTS_WEB = path.join(path.dirname(OBJECTS_PATH), 'обьекты абк web');
-const DEALER_WEB = path.join(path.dirname(DEALER_PATH), 'акбарс керамик для дилеров web');
+// Корни для поиска: текущая рабочая папка (деплой Railway и т.п.) и папка проекта (brick-demo)
+const cwd = process.cwd();
+const projectRoot = path.resolve(__dirname, '..');
 
-// Только сжатые папки web (без fallback на исходные)
+function findDir(dirName) {
+  const candidates = [
+    path.join(cwd, dirName),
+    path.join(projectRoot, dirName),
+    path.join(projectRoot, '..', dirName)
+  ];
+  for (const p of candidates) {
+    const abs = path.resolve(p);
+    if (fs.existsSync(abs)) return abs;
+  }
+  return path.resolve(projectRoot, dirName);
+}
+
+// Папки со сжатыми фото (.webp) — ищем по имени, всегда отдаём абсолютный путь
+const OBJECTS_WEB = findDir('обьекты абк web');
+const DEALER_WEB = findDir('акбарс керамик для дилеров web');
+
 function objectsDir() {
-  return OBJECTS_WEB;
+  return path.resolve(OBJECTS_WEB);
 }
 function dealerDir() {
-  return DEALER_WEB;
+  return path.resolve(DEALER_WEB);
 }
 
 // Расширения изображений (в папках web — только .webp)
 const IMAGE_EXT = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
 module.exports = {
-  OBJECTS_PATH,
-  DEALER_PATH,
   OBJECTS_WEB,
   DEALER_WEB,
   objectsDir,
