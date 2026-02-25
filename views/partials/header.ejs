@@ -24,9 +24,9 @@
     </nav>
 
     <div class="header__cta">
-      <a class="pill" href="tel:<%= site.contacts.phones[0].value.replace(/[^0-9+]/g,'') %>">
+      <a class="pill" href="tel:+7<%= site.contacts.phones[0].value.replace(/\D/g,'') %>">
         <span class="pill__title">Позвонить</span>
-        <span class="pill__value"><%= site.contacts.phones[0].value %></span>
+        <span class="pill__value"><%= formatPhone(site.contacts.phones[0].value) %></span>
       </a>
     </div>
   </div>

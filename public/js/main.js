@@ -83,4 +83,43 @@
       submitLeadForm(form);
     });
   });
+
+  // Карусель фото в карточках каталога (свайп и кнопки)
+  document.querySelectorAll('.product__media--carousel').forEach(carousel => {
+    const imgs = carousel.querySelectorAll('.product__media-img');
+    if (imgs.length <= 1) return;
+    const card = carousel.closest('.product');
+    const prevBtn = card.querySelector('[data-product-prev]');
+    const nextBtn = card.querySelector('[data-product-next]');
+    let idx = 0;
+    function show(i) {
+      idx = (i + imgs.length) % imgs.length;
+      imgs.forEach((el, k) => el.classList.toggle('is-active', k === idx));
+    }
+    if (prevBtn) prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      show(idx - 1);
+    });
+    if (nextBtn) nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      show(idx + 1);
+    });
+    let startX = 0;
+    let moved = false;
+    carousel.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      moved = false;
+    }, { passive: true });
+    carousel.addEventListener('touchmove', (e) => {
+      if (Math.abs(e.touches[0].clientX - startX) > 30) moved = true;
+    }, { passive: true });
+    carousel.addEventListener('touchend', (e) => {
+      if (!moved) return;
+      const endX = e.changedTouches[0].clientX;
+      if (endX < startX - 30) show(idx + 1);
+      else if (endX > startX + 30) show(idx - 1);
+    });
+  });
 })();

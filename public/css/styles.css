@@ -285,16 +285,57 @@ a:hover { text-decoration: underline; }
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
+.product__media-link{
+  display: block;
+  position: relative;
+}
 .product__media{
   position: relative;
   display: block;
-  aspect-ratio: 4 / 3; /* фиксируем форму, чтобы не прыгало */
+  aspect-ratio: 4 / 3;
   overflow: hidden;
+}
+.product__media--carousel{
+  position: relative;
+}
+.product__media-img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-height: 260px;
+  display: none;
+}
+.product__media-img.is-active{
+  display: block;
+}
+.product__carousel-prev,
+.product__carousel-next{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.15);
+  background: rgba(255,255,255,.9);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.product__carousel-prev{ left: 6px; }
+.product__carousel-next{ right: 6px; }
+.product__carousel-prev:hover,
+.product__carousel-next:hover{
+  background: #fff;
 }
 .product__media img{
   width: 100%;
   height: 100%;
   object-fit: cover;
+  max-height: 260px;
 }
 .product__body{ padding: 14px; display: grid; gap: 8px; }
 .product__meta{ display: flex; flex-wrap: wrap; gap: 6px; }
@@ -374,21 +415,74 @@ a:hover { text-decoration: underline; }
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
-.gcard__media{
+.gcard__media,
+.gcard__media-btn{
   display: block;
+  width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
+  position: relative;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: var(--bg-alt);
+  text-align: left;
 }
 .gcard__media img{
   width: 100%;
   height: 100%;
   object-fit: cover;
+  max-height: 280px;
+}
+.gcard__count{
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: rgba(0,0,0,.65);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 8px;
 }
 .gcard__body{ padding: 12px; display: grid; gap: 8px; }
 .gcard__title{ font-weight: 900; font-size: 13.5px; line-height: 1.25; }
 .gcard__tags{ display: flex; flex-wrap: wrap; gap: 6px; }
 
 .tagbar{ display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+
+.gallery-viewer{
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+}
+.gallery-viewer__main{
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-alt);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.gallery-viewer__main img{ max-height: 70vh; max-width: 100%; width: auto; object-fit: contain; }
+.gallery-viewer__prev,
+.gallery-viewer__next{
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: var(--b);
+  background: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gallery-viewer__counter{ text-align: center; font-size: 13px; color: var(--muted); }
+.modal__panel--wide{ width: min(900px, calc(100% - 24px)); }
+.modal__gallery-title{ margin-bottom: 8px; }
 
 /* ====== Страницы ====== */
 .pagehead{ padding: 18px 0 6px; display: grid; gap: 6px; }
@@ -585,7 +679,7 @@ input:focus, select:focus, textarea:focus{
   font-size: 22px;
 }
 
-/* ====== Map box ====== */
+/* ====== Map box (legacy) ====== */
 .mapbox{
   border: var(--b);
   border-radius: 18px;
@@ -641,3 +735,41 @@ input:focus, select:focus, textarea:focus{
   .form__row{ grid-template-columns: 1fr; }
   .footer__grid{ grid-template-columns: 1fr; }
 }
+
+/* Cookie banner */
+.cookie-banner{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(26,29,36,.96);
+  color: #e4e6eb;
+  padding: 14px var(--pad);
+  box-shadow: 0 -4px 20px rgba(0,0,0,.15);
+}
+.cookie-banner__inner{
+  max-width: var(--container);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cookie-banner__text{
+  flex: 1;
+  min-width: 260px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.cookie-banner__text a{ color: #7eb8f7; text-decoration: underline; }
+.cookie-banner__text a:hover{ color: #9ecaff; }
+.cookie-banner__btn{
+  flex-shrink: 0;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.prose p{ margin: 0 0 12px; line-height: 1.6; }
+.prose .h3{ margin-top: 20px; margin-bottom: 8px; }
+.prose .h3:first-of-type{ margin-top: 0; }

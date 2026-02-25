@@ -275,7 +275,7 @@ for (let i = 0; i < 36; i++) {
     title: `${cat === 'Кирпич облицовочный' ? 'Кирпич облицовочный' : 'Кирпич строительный'} “${pal.color}” ${fmt}`,
     image: `/public/assets/products/auto-${(i % 12) + 1}.jpg`,
     short: `Оттенок: ${pal.color}. Формат: ${fmt}. Подходит для домов, заборов и малых архитектурных форм.`,
-    description: `Позиция для демо-каталога. ${lorem.consult} ${lorem.delivery} ${lorem.docs}`,
+    description: `${lorem.consult} ${lorem.delivery} ${lorem.docs}`,
     specs: [
       ['Формат', fmt],
       ['Марка прочности', cat === 'Кирпич рядовой' ? 'М125–М150' : 'М150–М200'],
@@ -285,7 +285,7 @@ for (let i = 0; i < 36; i++) {
     ],
     color: pal.color,
     format: fmt,
-    tags: [pal.tag, 'демо'],
+    tags: [pal.tag],
     priceRub: cat === 'Кирпич рядовой' ? 14 + (i % 6) : 28 + (i % 10),
     unit: 'шт.',
     isFeatured: i % 9 === 0,
@@ -299,7 +299,7 @@ for (let i = 0; i < 18; i++) {
   auto.push({
     id: id++,
     category: 'Керамический блок',
-    title: `Блок керамический поризованный ${thick} мм (серия Demo)`,
+    title: `Блок керамический поризованный ${thick} мм`,
     image: `/public/assets/products/block-auto-${(i % 6) + 1}.jpg`,
     short: `Тёплая керамика, профиль паз-гребень. Толщина ${thick} мм.`,
     description: `Поризованные блоки для быстрого строительства. Подходит для несущих стен/перегородок в зависимости от толщины. ${lorem.consult} ${lorem.docs}`,
@@ -312,7 +312,7 @@ for (let i = 0; i < 18; i++) {
     ],
     color: 'терракотовый',
     format: `${(i % 2) ? '10,7NF' : '12,4NF'}`,
-    tags: ['блок', 'тёплая керамика', 'демо'],
+    tags: ['блок', 'тёплая керамика'],
     priceRub: 170 + (i % 6) * 25,
     unit: 'шт.',
     isFeatured: i % 10 === 0

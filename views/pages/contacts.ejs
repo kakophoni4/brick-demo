@@ -4,7 +4,7 @@
 
   <section class="pagehead">
     <h1 class="h1">Контакты</h1>
-    <p class="muted">Демо-страница с объемным, но структурным контентом + форма без “наездов”.</p>
+    <p class="muted">Телефоны, адреса и форма обратной связи.</p>
   </section>
 
   <section class="section section--tight">
@@ -13,7 +13,7 @@
         <h2 class="h3">Телефоны и почта</h2>
         <ul class="list">
           <% site.contacts.phones.forEach(p => { %>
-            <li><strong><%= p.label %>:</strong> <a href="tel:<%= p.value.replace(/[^0-9+]/g,'') %>"><%= p.value %></a></li>
+            <li><% if (p.label) { %><strong><%= p.label %>:</strong> <% } %><a href="tel:+7<%= p.value.replace(/\D/g,'') %>"><%= formatPhone(p.value) %></a></li>
           <% }) %>
           <li><strong>Email:</strong> <a href="mailto:<%= site.contacts.email %>"><%= site.contacts.email %></a></li>
         </ul>
@@ -66,21 +66,12 @@
           <button class="btn" type="submit">Отправить</button>
 
           <p class="muted small">
-            В демо заявка сохраняется только в ответе сервера (без отправки в почту/CRM).
+            Нажимая "Отправить", вы соглашаетесь с <a href="/privacy">политикой конфиденциальности</a>.
           </p>
 
           <div class="form__result" data-form-result aria-live="polite"></div>
         </form>
 
-        <hr class="hr"/>
-
-        <h2 class="h3">Карта</h2>
-        <div class="mapbox" aria-label="Карта (заглушка)">
-          <div class="muted">
-            Здесь можно вставить Яндекс.Карты/2ГИС iframe.  
-            Размер блока фиксирован, ничего не “вылезает”.
-          </div>
-        </div>
       </div>
     </div>
   </section>

@@ -1,0 +1,245 @@
+/* ====== Админка: боковая панель и контент ====== */
+.admin-body {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg-alt, #f6f7f9);
+}
+
+.admin-sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: #1a1d24;
+  color: #e4e6eb;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar__head {
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.admin-sidebar__brand {
+  font-weight: 800;
+  font-size: 18px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.admin-sidebar__brand:hover {
+  text-decoration: none;
+  color: #fff;
+  opacity: .9;
+}
+
+.admin-nav {
+  flex: 1;
+  padding: 16px 0;
+}
+
+.admin-nav__link {
+  display: block;
+  padding: 10px 20px;
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background .15s, color .15s;
+}
+
+.admin-nav__link:hover {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  text-decoration: none;
+}
+
+.admin-nav__link--active {
+  background: rgba(31, 112, 189, .35);
+  color: #fff;
+  border-left: 3px solid var(--brand, #1f70bd);
+}
+
+.admin-nav__link--logout {
+  color: rgba(255,255,255,.5);
+  font-weight: 500;
+}
+
+.admin-sidebar__foot {
+  padding: 16px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.admin-logout {
+  margin: 0;
+}
+
+.admin-main {
+  flex: 1;
+  overflow-x: hidden;
+  padding: 24px 32px 48px;
+}
+
+.admin-main .container {
+  max-width: 100%;
+}
+
+/* Кнопка загрузки фото */
+.admin-upload-zone {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: #fff;
+  border: 2px dashed rgba(0,0,0,.15);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+
+.admin-upload-zone:hover {
+  border-color: var(--brand);
+  background: rgba(31, 112, 189, .04);
+}
+
+.admin-upload-zone input[type="file"] {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.admin-upload-zone__icon {
+  font-size: 20px;
+  color: var(--brand);
+}
+
+.admin-upload-zone__text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Сетка фото с чекбоксами и перетаскиванием */
+.admin-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.admin-photo {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eee;
+}
+
+.admin-photo__img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-photo__chk {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 2;
+  accent-color: var(--brand);
+}
+
+.admin-photo__drag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: rgba(0,0,0,.5);
+  color: #fff;
+  border-radius: 6px;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  z-index: 2;
+}
+
+.admin-photo__drag:active {
+  cursor: grabbing;
+}
+
+.admin-photo.admin-photo--dragging {
+  opacity: .7;
+}
+
+/* Блок альбома/товара */
+.admin-block {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.04);
+}
+
+.admin-block__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.admin-block__title {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+  padding: 10px 14px;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.admin-block__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-block__save {
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.btn--danger {
+  background: #c53030;
+  color: #fff;
+}
+
+.btn--danger:hover {
+  background: #9b2222;
+}
+
+.admin-pagehead {
+  margin-bottom: 24px;
+}
+
+.admin-pagehead .h1 {
+  margin-bottom: 6px;
+}
+
+.admin-pagehead .muted {
+  font-size: 14px;
+}

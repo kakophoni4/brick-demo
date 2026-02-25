@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title><%= pageTitle %> — Админка</title>
+  <link rel="stylesheet" href="/public/css/styles.css"/>
+  <link rel="stylesheet" href="/public/css/admin.css"/>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__head">
+      <a class="admin-sidebar__brand" href="/admin">Админка</a>
+    </div>
+    <nav class="admin-nav">
+      <a class="admin-nav__link<%= currentPath === '/admin' ? ' admin-nav__link--active' : '' %>" href="/admin">Главная</a>
+      <a class="admin-nav__link<%= currentPath === '/admin/leads' ? ' admin-nav__link--active' : '' %>" href="/admin/leads">Заявки</a>
+      <a class="admin-nav__link<%= currentPath === '/admin/gallery' ? ' admin-nav__link--active' : '' %>" href="/admin/gallery">Галерея</a>
+      <a class="admin-nav__link<%= currentPath === '/admin/catalog' ? ' admin-nav__link--active' : '' %>" href="/admin/catalog">Каталог</a>
+    </nav>
+    <div class="admin-sidebar__foot">
+      <form method="post" action="/admin/logout" class="admin-logout">
+        <button type="submit" class="admin-nav__link admin-nav__link--logout">Выйти</button>
+      </form>
+    </div>
+  </aside>
+  <div class="admin-main">
+    <%- body %>
+  </div>
+</body>
+</html>

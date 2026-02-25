@@ -1,13 +1,15 @@
-<article class="card gcard">
-  <a class="gcard__media" href="<%= item.image %>" target="_blank" rel="noreferrer">
-    <img src="<%= item.image %>" alt="<%= item.title %>" loading="lazy">
-  </a>
+<article class="card gcard" data-gallery-album-id="<%= item.id %>">
+  <button type="button" class="gcard__media gcard__media-btn" data-gallery-open data-gallery-id="<%= item.id %>" aria-label="Открыть альбом <%= item.title %>">
+    <img src="<%= item.images[0] %>" alt="<%= item.title %>" loading="lazy" width="400" height="300">
+    <% if (item.images.length > 1) { %>
+      <span class="gcard__count"><%= item.images.length %> фото</span>
+    <% } %>
+  </button>
   <div class="gcard__body">
-    <div class="gcard__title"><%= item.title %></div>
-    <div class="gcard__tags">
-      <% item.tags.forEach(t => { %>
-        <span class="pill-mini"><%= t %></span>
-      <% }) %>
-    </div>
+    <div class="gcard__title"><%= capFirst(item.title) %></div>
   </div>
 </article>
+<script>
+if (typeof window.__galleryAlbums === 'undefined') window.__galleryAlbums = {};
+window.__galleryAlbums['<%= item.id %>'] = <%- JSON.stringify(item) %>;
+</script>

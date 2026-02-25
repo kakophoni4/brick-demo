@@ -1,17 +1,21 @@
-<article class="card product">
-  <a class="product__media" href="/catalog/<%= p.slug %>">
-    <img src="<%= p.image %>" alt="<%= p.title %>" loading="lazy">
+<article class="card product" data-product-id="<%= p.id %>">
+  <a class="product__media-link" href="/catalog/<%= p.slug %>">
+    <div class="product__media product__media--carousel">
+      <% const imgs = p.gallery && p.gallery.length ? p.gallery : [p.image]; %>
+      <% imgs.forEach((img, idx) => { %>
+        <img class="product__media-img <%= idx === 0 ? 'is-active' : '' %>" src="<%= img %>" alt="<%= p.title %>" loading="lazy" width="320" height="240" data-index="<%= idx %>">
+      <% }) %>
+      <% if (imgs.length > 1) { %>
+        <button type="button" class="product__carousel-prev" aria-label="Предыдущее фото" data-product-prev>‹</button>
+        <button type="button" class="product__carousel-next" aria-label="Следующее фото" data-product-next>›</button>
+      <% } %>
+    </div>
     <% if (p.isBestseller) { %><span class="badge">Хит</span><% } %>
   </a>
 
   <div class="product__body">
-    <div class="product__meta">
-      <span class="pill-mini"><%= p.category %></span>
-      <% if (p.format && p.format !== '—') { %><span class="pill-mini">Формат: <%= p.format %></span><% } %>
-    </div>
-
     <h3 class="product__title">
-      <a href="/catalog/<%= p.slug %>"><%= p.title %></a>
+      <a href="/catalog/<%= p.slug %>"><%= capFirst(p.title) %></a>
     </h3>
 
     <p class="product__short"><%= p.short %></p>
@@ -19,11 +23,12 @@
     <div class="product__bottom">
       <div>
         <div class="price">
-          <% if (p.priceRub) { %>
-            <span class="price__value"><%= p.priceRub.toLocaleString('ru-RU') %> ₽</span>
-            <span class="price__unit">/ <%= p.unit %></span>
+          <% const fromPrice = p.priceFrom != null ? p.priceFrom : (p.priceRub != null ? p.priceRub : null); %>
+          <% if (fromPrice != null) { %>
+            <span class="price__value">от <%= Number(fromPrice).toLocaleString('ru-RU') %> ₽</span>
+            <span class="price__unit"> — уточняйте по телефону</span>
           <% } else { %>
-            <span class="price__value">Цена по запросу</span>
+            <span class="price__value">Цена: уточняйте по телефону</span>
           <% } %>
         </div>
         <div class="muted small"><%= p.availability %></div>

@@ -22,32 +22,19 @@
       </div>
 
       <div class="card pad">
-        <h1 class="h2"><%= product.title %></h1>
-
-        <div class="chips">
-          <span class="chip"><%= product.category %></span>
-          <% if (product.format && product.format !== '—') { %><span class="chip">Формат: <%= product.format %></span><% } %>
-          <% if (product.color) { %><span class="chip">Цвет: <%= product.color %></span><% } %>
-        </div>
+        <h1 class="h2"><%= capFirst(product.title) %></h1>
 
         <p class="lead"><%= product.short %></p>
 
         <div class="pricebox">
           <div class="price">
-            <% if (product.priceRub) { %>
-              <span class="price__value"><%= product.priceRub.toLocaleString('ru-RU') %> ₽</span>
-              <span class="price__unit">/ <%= product.unit %></span>
-            <% } else { %>
-              <span class="price__value">Цена по запросу</span>
-            <% } %>
+            <span class="price__value">Цена: уточняйте по телефону</span>
           </div>
           <div class="muted small"><%= product.availability %></div>
         </div>
 
         <div class="actionsrow">
-          <button class="btn" type="button" data-open-lead data-source="Товар: <%= product.title %>">
-            Узнать стоимость / наличие
-          </button>
+          <a class="btn" href="tel:+7<%= site.contacts.phones[0].value.replace(/\D/g,'') %>">Позвонить: <%= formatPhone(site.contacts.phones[0].value) %></a>
           <a class="btn btn--ghost" href="/catalog">Назад в каталог</a>
         </div>
 
@@ -55,16 +42,6 @@
 
         <h2 class="h3">Описание</h2>
         <p class="muted"><%= product.description %></p>
-
-        <h2 class="h3">Характеристики</h2>
-        <div class="specs">
-          <% product.specs.forEach(row => { %>
-            <div class="specs__row">
-              <div class="specs__k"><%= row[0] %></div>
-              <div class="specs__v"><%= row[1] %></div>
-            </div>
-          <% }) %>
-        </div>
       </div>
     </div>
   </section>

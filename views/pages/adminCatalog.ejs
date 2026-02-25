@@ -1,0 +1,131 @@
+<div class="container">
+  <section class="admin-pagehead">
+    <h1 class="h1">Каталог</h1>
+    <p class="muted">Товары из папки «акбарс керамик для дилеров web». Сохраняйте изменения по каждому товару отдельно.</p>
+    <% if (typeof err !== 'undefined' && err) { %> 
+      <p class="muted" style="color: var(--brand2);">Ошибка импорта. Проверьте путь к папке.</p>
+    <% } %>
+  </section>
+
+  <div class="card pad" style="margin-bottom: 24px;">
+    <form method="post" action="/admin/api/catalog/import">
+      <button type="submit" class="btn">Импорт из папки (пересобрать каталог)</button>
+    </form>
+  </div>
+
+  <% items.forEach((p) => { %>
+  <div class="admin-block" data-product-id="<%= p.id %>">
+    <form method="post" action="/admin/api/catalog/product/<%= p.id %>/save" class="admin-block__form">
+      <input type="hidden" name="gallery" class="admin-block__gallery-input" value="<%= JSON.stringify(p.gallery || []) %>">
+      <div class="admin-block__head" style="flex-wrap: wrap;">
+        <input type="text" name="title" value="<%= p.title %>" class="admin-block__title" placeholder="Название" style="min-width: 200px;">
+        <select name="category" style="padding: 10px 14px; border: 1px solid rgba(0,0,0,.12); border-radius: 10px; font-size: 14px;">
+          <% categories.forEach(c => { %>
+            <option value="<%= c %>" <%= p.category === c ? 'selected' : '' %>><%= c %></option>
+          <% }) %>
+        </select>
+        <input type="text" name="short" value="<%= p.short || '' %>" placeholder="Кратко" style="padding: 10px 14px; border: 1px solid rgba(0,0,0,.12); border-radius: 10px; font-size: 14px; min-width: 180px;">
+        <input type="number" name="priceFrom" value="<%= p.priceFrom != null ? p.priceFrom : (p.priceRub != null ? p.priceRub : '') %>" placeholder="Цена от" min="0" step="1" style="padding: 10px 14px; border: 1px solid rgba(0,0,0,.12); border-radius: 10px; font-size: 14px; width: 100px;">
+        <div class="admin-block__actions">
+          <button type="submit" class="btn admin-block__save">Сохранить товар</button>
+        </div>
+      </div>
+    </form>
+
+    <form method="post" action="/admin/api/catalog/product/<%= p.id %>/upload" enctype="multipart/form-data" style="margin-bottom: 12px;">
+      <label class="admin-upload-zone">
+        <input type="file" name="photos" multiple accept=".jpg,.jpeg,.png,.gif,.webp" class="admin-upload-input">
+        <span class="admin-upload-zone__icon">↑</span>
+        <span class="admin-upload-zone__text">Добавить фото</span>
+      </label>
+      <button type="submit" class="btn btn--ghost" style="margin-left: 10px; vertical-align: middle;">Загрузить</button>
+    </form>
+
+    <% if (p.gallery && p.gallery.length) { %>
+    <form method="post" action="/admin/api/catalog/product/<%= p.id %>/delete-images" class="admin-delete-form" data-product-id="<%= p.id %>">
+      <input type="hidden" name="imageUrls" class="admin-delete-urls-input" value="">
+      <button type="submit" class="btn btn--ghost btn--danger" style="margin-bottom: 12px; font-size: 13px;" onclick="return adminCatalogConfirmDelete(this);">Удалить выбранные</button>
+    </form>
+    <div class="admin-photos admin-photos-sortable admin-photos--catalog" data-product-id="<%= p.id %>" data-images="<%= JSON.stringify(p.gallery) %>">
+      <% p.gallery.forEach((img, idx) => { %>
+      <div class="admin-photo" draggable="true" data-url="<%= img %>" data-drag-id="product-<%= p.id %>-<%= idx %>">
+        <input type="checkbox" class="admin-photo__chk" aria-label="Выбрать для удаления">
+        <span class="admin-photo__drag" aria-hidden="true">⋮⋮</span>
+        <img src="<%= img %>" alt="" class="admin-photo__img" loading="lazy">
+      </div>
+      <% }) %>
+    </div>
+    <% } %>
+  </div>
+  <% }) %>
+
+  <script>
+  (function() {
+    function initBlock(block) {
+      var form = block.querySelector('.admin-block__form');
+      var galleryInput = block.querySelector('.admin-block__gallery-input');
+      var sortable = block.querySelector('.admin-photos-sortable');
+      if (form && galleryInput && sortable) {
+        function getOrder() {
+          return [].map.call(sortable.querySelectorAll('.admin-photo'), function(el) { return el.getAttribute('data-url'); });
+        }
+        function syncInput() { galleryInput.value = JSON.stringify(getOrder()); }
+        syncInput();
+        form.addEventListener('submit', function() { syncInput(); });
+
+        sortable.addEventListener('dragstart', function(e) {
+          var photo = e.target.closest('.admin-photo');
+          if (!photo) return;
+          photo.classList.add('admin-photo--dragging');
+          e.dataTransfer.setData('text/plain', photo.getAttribute('data-drag-id'));
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        sortable.addEventListener('dragend', function(e) {
+          var p = e.target.closest('.admin-photo');
+          if (p) p.classList.remove('admin-photo--dragging');
+        });
+        sortable.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          var photo = e.target.closest('.admin-photo');
+          if (photo && photo.classList.contains('admin-photo--dragging')) return;
+          if (photo) e.dataTransfer.dropEffect = 'move';
+        });
+        sortable.addEventListener('drop', function(e) {
+          e.preventDefault();
+          var dragId = e.dataTransfer.getData('text/plain');
+          var from = sortable.querySelector('.admin-photo[data-drag-id="' + dragId + '"]');
+          var to = e.target.closest('.admin-photo');
+          if (!from || !to || from === to) return;
+          var next = to.nextElementSibling;
+          to.parentNode.insertBefore(from, next);
+          syncInput();
+        });
+      }
+      var uploadForm = block.querySelector('form[action*="/upload"]');
+      if (uploadForm) {
+        var uploadInput = uploadForm.querySelector('.admin-upload-input');
+        if (uploadInput) uploadInput.addEventListener('change', function() { if (this.files && this.files.length) uploadForm.submit(); });
+      }
+    }
+    document.querySelectorAll('.admin-block').forEach(initBlock);
+
+    window.adminCatalogConfirmDelete = function(btn) {
+      var form = btn.closest('.admin-delete-form');
+      var block = form.closest('.admin-block');
+      var checks = block.querySelectorAll('.admin-photo__chk:checked');
+      if (checks.length === 0) { alert('Выберите фото для удаления'); return false; }
+      var urls = [].map.call(checks, function(c) { return c.closest('.admin-photo').getAttribute('data-url'); });
+      form.querySelector('.admin-delete-urls-input').value = JSON.stringify(urls);
+      return confirm('Удалить выбранные фото (' + urls.length + ')?');
+    };
+    document.querySelectorAll('.admin-delete-form').forEach(function(form) {
+      form.addEventListener('submit', function() {
+        var block = form.closest('.admin-block');
+        var checks = block.querySelectorAll('.admin-photo__chk:checked');
+        var urls = [].map.call(checks, function(c) { return c.closest('.admin-photo').getAttribute('data-url'); });
+        form.querySelector('.admin-delete-urls-input').value = JSON.stringify(urls);
+      });
+    });
+  })();
+  </script>
+</div>

@@ -26,7 +26,7 @@
       <div class="footer__title">Контакты</div>
       <ul class="footer__links">
         <% site.contacts.phones.forEach(p => { %>
-          <li><a href="tel:<%= p.value.replace(/[^0-9+]/g,'') %>"><%= p.value %></a> <span class="muted">— <%= p.label %></span></li>
+          <li><a href="tel:+7<%= p.value.replace(/\D/g,'') %>"><%= formatPhone(p.value) %></a><% if (p.label) { %> <span class="muted">— <%= p.label %></span><% } %></li>
         <% }) %>
         <li><a href="mailto:<%= site.contacts.email %>"><%= site.contacts.email %></a></li>
       </ul>
@@ -38,6 +38,7 @@
 
   <div class="container footer__bottom">
     <span class="muted small">© <%= new Date().getFullYear() %> <%= site.brand.name %>. Все права защищены.</span>
-    <span class="muted small">Сделано для демо · Node.js + EJS</span>
+    <span class="muted small"><a href="/privacy" class="muted">Политика конфиденциальности</a></span>
+    <span class="muted small"><a href="/admin" class="muted">Админка</a></span>
   </div>
 </footer>

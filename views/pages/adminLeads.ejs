@@ -1,0 +1,33 @@
+<div class="container">
+  <section class="admin-pagehead">
+    <h1 class="h1">Заявки</h1>
+    <p class="muted">Заявки с форм сайта и из CRM (webhook). Новые сверху.</p>
+  </section>
+
+  <div class="card pad">
+    <p class="muted small">Webhook для CRM: <code>POST /api/lead/webhook</code>. Тело: <code>name</code>, <code>phone</code>, <code>message</code>, <code>source</code>. Опционально: заголовок <code>X-Crm-Token</code> или параметр <code>token</code> — задайте <code>CRM_WEBHOOK_TOKEN</code> в окружении.</p>
+  </div>
+
+  <% if (!leads || leads.length === 0) { %>
+  <div class="card pad" style="margin-top: 16px;">
+    <p class="muted">Пока нет заявок.</p>
+  </div>
+  <% } else { %>
+  <div class="admin-leads-list" style="margin-top: 16px;">
+    <% leads.forEach((lead) => { %>
+    <div class="admin-block" style="margin-bottom: 16px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline;">
+        <strong><%= lead.name %></strong>
+        <a href="tel:+7<%= lead.phone.replace(/\D/g,'') %>"><%= lead.phone %></a>
+        <% if (lead.fromCrm) { %><span class="chip" style="font-size: 11px;">CRM</span><% } %>
+        <span class="muted small"><%= lead.source %></span>
+        <span class="muted small"><%= lead.createdAt ? new Date(lead.createdAt).toLocaleString('ru-RU') : '' %></span>
+      </div>
+      <% if (lead.message) { %>
+      <p class="muted" style="margin: 8px 0 0; white-space: pre-wrap;"><%= lead.message %></p>
+      <% } %>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>

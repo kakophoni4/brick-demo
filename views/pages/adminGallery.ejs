@@ -1,0 +1,134 @@
+<div class="container">
+  <section class="admin-pagehead">
+    <h1 class="h1">Галерея</h1>
+    <p class="muted">Альбомы из папки «обьекты абк web». Сохраняйте изменения по каждому альбому отдельно.</p>
+    <% if (typeof err !== 'undefined' && err) { %>
+      <p class="muted" style="color: var(--brand2);">Ошибка импорта. Проверьте путь к папке.</p>
+    <% } %>
+  </section>
+
+  <div class="card pad" style="margin-bottom: 24px;">
+    <form method="post" action="/admin/api/gallery/import">
+      <button type="submit" class="btn">Импорт из папки (пересобрать альбомы)</button>
+    </form>
+  </div>
+
+  <% items.forEach((item) => { %>
+  <div class="admin-block" data-album-id="<%= item.id %>">
+    <form method="post" action="/admin/api/gallery/album/<%= item.id %>/save" class="admin-block__form">
+      <div class="admin-block__head">
+        <input type="text" name="title" class="admin-block__title" value="<%= item.title %>" placeholder="Название альбома">
+        <input type="hidden" name="images" class="admin-block__images-input" value="">
+        <div class="admin-block__actions">
+          <button type="submit" class="btn admin-block__save">Сохранить альбом</button>
+        </div>
+      </div>
+    </form>
+
+    <form class="admin-block__upload" method="post" action="/admin/api/gallery/album/<%= item.id %>/upload" enctype="multipart/form-data" style="margin-bottom: 12px;">
+      <label class="admin-upload-zone">
+        <input type="file" name="photos" multiple accept=".jpg,.jpeg,.png,.gif,.webp" class="admin-upload-input">
+        <span class="admin-upload-zone__icon">↑</span>
+        <span class="admin-upload-zone__text">Добавить фото</span>
+      </label>
+      <button type="submit" class="btn btn--ghost" style="margin-left: 10px; vertical-align: middle;">Загрузить</button>
+    </form>
+
+    <% if (item.images && item.images.length) { %>
+    <form method="post" action="/admin/api/gallery/album/<%= item.id %>/delete-images" class="admin-delete-form" data-album-id="<%= item.id %>">
+      <input type="hidden" name="imageUrls" class="admin-delete-urls-input" value="">
+      <button type="submit" class="btn btn--ghost btn--danger admin-delete-btn" style="margin-bottom: 12px; font-size: 13px;" onclick="return adminConfirmDelete(this);">Удалить выбранные</button>
+    </form>
+    <div class="admin-photos admin-photos-sortable" data-album-id="<%= item.id %>" data-images="<%= JSON.stringify(item.images) %>">
+      <% item.images.forEach((img, idx) => { %>
+      <div class="admin-photo" draggable="true" data-url="<%= img %>" data-drag-id="album-<%= item.id %>-<%= idx %>">
+        <input type="checkbox" class="admin-photo__chk" aria-label="Выбрать для удаления">
+        <span class="admin-photo__drag" aria-hidden="true">⋮⋮</span>
+        <img src="<%= img %>" alt="" class="admin-photo__img" loading="lazy">
+      </div>
+      <% }) %>
+    </div>
+    <% } %>
+  </div>
+  <% }) %>
+
+  <script>
+  (function() {
+    var blocks = document.querySelectorAll('.admin-block');
+    blocks.forEach(function(block) {
+      var form = block.querySelector('.admin-block__form');
+      var imagesInput = block.querySelector('.admin-block__images-input');
+      var sortable = block.querySelector('.admin-photos-sortable');
+      if (form && imagesInput && sortable) {
+        function getOrder() {
+          return [].map.call(sortable.querySelectorAll('.admin-photo'), function(el) { return el.getAttribute('data-url'); });
+        }
+        function syncInput() {
+          imagesInput.value = JSON.stringify(getOrder());
+        }
+        sortable.querySelectorAll('.admin-photo').forEach(function(el, i) {});
+        syncInput();
+        form.addEventListener('submit', function() { syncInput(); });
+
+        sortable.addEventListener('dragstart', function(e) {
+          var photo = e.target.closest('.admin-photo');
+          if (!photo) return;
+          photo.classList.add('admin-photo--dragging');
+          e.dataTransfer.setData('text/plain', photo.getAttribute('data-drag-id'));
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        sortable.addEventListener('dragend', function(e) {
+          var p = e.target.closest('.admin-photo');
+          if (p) p.classList.remove('admin-photo--dragging');
+        });
+        sortable.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          var photo = e.target.closest('.admin-photo');
+          if (photo && photo.classList.contains('admin-photo--dragging')) return;
+          if (photo) e.dataTransfer.dropEffect = 'move';
+        });
+        sortable.addEventListener('drop', function(e) {
+          e.preventDefault();
+          var dragId = e.dataTransfer.getData('text/plain');
+          var from = sortable.querySelector('.admin-photo[data-drag-id="' + dragId + '"]');
+          var to = e.target.closest('.admin-photo');
+          if (!from || !to || from === to) return;
+          var next = to.nextElementSibling;
+          to.parentNode.insertBefore(from, next);
+          syncInput();
+        });
+      }
+
+      var uploadForm = block.querySelector('.admin-block__upload');
+      if (uploadForm) {
+        var uploadInput = uploadForm.querySelector('.admin-upload-input');
+        if (uploadInput) {
+          uploadInput.addEventListener('change', function() {
+            if (this.files && this.files.length) uploadForm.submit();
+          });
+        }
+      }
+    });
+
+    window.adminConfirmDelete = function(btn) {
+      var form = btn.closest('.admin-delete-form');
+      var urlsInput = form.querySelector('.admin-delete-urls-input');
+      var block = form.closest('.admin-block');
+      var checks = block.querySelectorAll('.admin-photo__chk:checked');
+      if (checks.length === 0) { alert('Выберите фото для удаления'); return false; }
+      var urls = [].map.call(checks, function(c) { return c.closest('.admin-photo').getAttribute('data-url'); });
+      urlsInput.value = JSON.stringify(urls);
+      return confirm('Удалить выбранные фото (' + urls.length + ')?');
+    };
+
+    document.querySelectorAll('.admin-delete-form').forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        var block = form.closest('.admin-block');
+        var checks = block.querySelectorAll('.admin-photo__chk:checked');
+        var urls = [].map.call(checks, function(c) { return c.closest('.admin-photo').getAttribute('data-url'); });
+        form.querySelector('.admin-delete-urls-input').value = JSON.stringify(urls);
+      });
+    });
+  })();
+  </script>
+</div>

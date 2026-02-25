@@ -1,0 +1,19 @@
+<div class="container">
+  <section class="pagehead" style="max-width: 360px; margin: 60px auto 0;">
+    <h1 class="h1">Вход в админ-панель</h1>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <p class="muted" style="color: var(--brand2);">Неверный логин или пароль.</p>
+    <% } %>
+    <form class="card pad" method="post" action="/admin/login" style="max-width: 320px;">
+      <label class="field">
+        <span class="field__label">Логин</span>
+        <input name="admin_login" type="text" required placeholder="admin" autocomplete="username">
+      </label>
+      <label class="field">
+        <span class="field__label">Пароль</span>
+        <input name="admin_password" type="password" required placeholder="Введите пароль" autocomplete="current-password">
+      </label>
+      <button class="btn" type="submit">Войти</button>
+    </form>
+  </section>
+</div>

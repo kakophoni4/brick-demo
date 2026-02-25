@@ -1,4 +1,4 @@
-﻿node_modules
+node_modules
 .env
 .DS_Store
 npm-debug.log*
@@ -6,3 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 .vercel
 dist
+src/data/leads.json
+
+# Оригиналы фото (тяжёлые) — не коммитить. В репо только сжатые папки «* web» с .webp
+обьекты абк
+акбарс керамик для дилеров
