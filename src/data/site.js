@@ -30,6 +30,6 @@ module.exports = {
     { title: 'Telegram', href: '#', note: 'заменить ссылку' }
   ],
   seo: {
-    ogImage: '/public/assets/hero/hero-1.jpg'
+    ogImage: '/public/assets/hero/hero-showroom.png'
   }
 };
