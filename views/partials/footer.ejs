@@ -2,9 +2,9 @@
   <div class="container footer__grid">
     <div>
       <div class="footer__brand"><%= site.brand.name %></div>
-      <p class="muted">
-        <%= site.brand.note %>
-      </p>
+      <% if (site.brand.note && String(site.brand.note).trim()) { %>
+      <p class="muted"><%= site.brand.note %></p>
+      <% } %>
       <div class="chips">
         <span class="chip">Подбор по проекту</span>
         <span class="chip">Доставка</span>
