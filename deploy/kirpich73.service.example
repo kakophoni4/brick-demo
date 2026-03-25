@@ -1,0 +1,19 @@
+[Unit]
+Description=Кирпич73 (Node Express)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/kirpich73
+Environment=NODE_ENV=production
+Environment=PORT=3001
+Environment=SESSION_SECRET=замените-на-случайную-строку
+Environment=ADMIN_LOGIN=admin
+Environment=ADMIN_PASSWORD=замените
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
