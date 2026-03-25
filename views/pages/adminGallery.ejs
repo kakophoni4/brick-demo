@@ -1,29 +1,34 @@
 <div class="container">
-  <section class="admin-pagehead">
+  <section class="admin-pagehead" id="gallery-admin-top">
     <h1 class="h1">Галерея</h1>
-    <p class="muted">Альбомы из папки «обьекты абк web». Сохраняйте изменения по каждому альбому отдельно.</p>
+    <p class="muted">Альбомы из папки «обьекты абк web». Можно создавать пустые объекты и удалять альбомы. Сохраняйте изменения по каждому альбому отдельно.</p>
     <% if (typeof err !== 'undefined' && err) { %>
       <p class="muted" style="color: var(--brand2);">Ошибка импорта. Проверьте путь к папке.</p>
     <% } %>
   </section>
 
   <div class="card pad" style="margin-bottom: 24px;">
-    <form method="post" action="/admin/api/gallery/import">
+    <form method="post" action="/admin/api/gallery/import" style="margin-bottom: 16px;">
       <button type="submit" class="btn">Импорт из папки (пересобрать альбомы)</button>
+    </form>
+    <form method="post" action="/admin/api/gallery/album/new" class="admin-gallery-new" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+      <input type="text" name="title" required class="admin-block__title" placeholder="Название нового объекта *" style="min-width: 220px; flex: 1;">
+      <button type="submit" class="btn btn--ghost">Создать объект</button>
     </form>
   </div>
 
   <% items.forEach((item) => { %>
-  <div class="admin-block" data-album-id="<%= item.id %>">
-    <form method="post" action="/admin/api/gallery/album/<%= item.id %>/save" class="admin-block__form">
-      <div class="admin-block__head">
+  <div class="admin-block" id="album-<%= item.id %>" data-album-id="<%= item.id %>">
+    <div class="admin-block__head" style="flex-wrap: wrap; gap: 10px;">
+      <form method="post" action="/admin/api/gallery/album/<%= item.id %>/save" class="admin-block__form" style="display: flex; flex-wrap: wrap; gap: 10px; flex: 1; align-items: center; min-width: 0;">
         <input type="text" name="title" class="admin-block__title" value="<%= item.title %>" placeholder="Название альбома">
         <input type="hidden" name="images" class="admin-block__images-input" value="">
-        <div class="admin-block__actions">
-          <button type="submit" class="btn admin-block__save">Сохранить альбом</button>
-        </div>
-      </div>
-    </form>
+        <button type="submit" class="btn admin-block__save">Сохранить альбом</button>
+      </form>
+      <form method="post" action="/admin/api/gallery/album/<%= item.id %>/delete" onsubmit="return confirm('Удалить этот объект галереи и все его фото с диска?');">
+        <button type="submit" class="btn btn--ghost btn--danger">Удалить объект</button>
+      </form>
+    </div>
 
     <form class="admin-block__upload" method="post" action="/admin/api/gallery/album/<%= item.id %>/upload" enctype="multipart/form-data" style="margin-bottom: 12px;">
       <label class="admin-upload-zone">
@@ -129,6 +134,12 @@
         form.querySelector('.admin-delete-urls-input').value = JSON.stringify(urls);
       });
     });
+
+    if (location.hash && document.querySelector(location.hash)) {
+      setTimeout(function() {
+        document.querySelector(location.hash).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   })();
   </script>
 </div>

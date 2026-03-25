@@ -16,7 +16,9 @@ const {
   loadGallery, loadCatalog, saveGallery, saveCatalog,
   importGalleryFromScan, importCatalogFromScan,
   addGalleryImages, removeGalleryImage, removeGalleryImages, updateGalleryAlbum,
-  getCatalogProductFolder, addCatalogImages, removeCatalogImage,   removeCatalogImages, updateCatalogProduct, addCatalogProduct
+  addGalleryAlbum, deleteGalleryAlbum,
+  getCatalogProductFolder, addCatalogImages, removeCatalogImage, removeCatalogImages, updateCatalogProduct, addCatalogProduct,
+  deleteCatalogProduct
 } = require('./src/data/loadData');
 const { categories: defaultCategories, getProductBySlug: getProductBySlugFromCatalog } = require('./src/data/catalog');
 const { objectsDir, dealerDir } = require('./src/config');
@@ -142,15 +144,11 @@ app.get('/about', (req, res) => {
 app.get('/catalog', (req, res) => {
   const q = (req.query.q || '').trim().toLowerCase();
   const cat = (req.query.cat || '').trim();
-  const color = (req.query.color || '').trim();
-  const format = (req.query.format || '').trim();
   const price = (req.query.price || '').trim();
 
   let items = [...catalog];
 
   if (cat) items = items.filter(p => p.category === cat);
-  if (color) items = items.filter(p => (p.color || '').includes(color));
-  if (format) items = items.filter(p => p.format === format);
   if (q) items = items.filter(p =>
     (p.title + ' ' + (p.short || '') + ' ' + (p.tags || []).join(' ')).toLowerCase().includes(q)
   );
@@ -160,10 +158,10 @@ app.get('/catalog', (req, res) => {
 
   res.render('pages/catalog', {
     pageTitle: 'Каталог',
-    metaDescription: 'Каталог кирпича, блоков, растворов и аксессуаров. Фильтры, поиск, карточки товаров.',
+    metaDescription: 'Каталог кирпича, блоков, растворов и аксессуаров. Поиск, категории, карточки товаров.',
     items,
     categories,
-    filters: { q: req.query.q || '', cat, color, format, price }
+    filters: { q: req.query.q || '', cat, price }
   });
 });
 
@@ -321,9 +319,9 @@ app.post('/admin/api/gallery/import', (req, res) => {
     importGalleryFromScan();
     refreshData();
   } catch (e) {
-    return res.redirect('/admin/gallery?err=import');
+    return   res.redirect('/admin/gallery?err=import');
   }
-  res.redirect('/admin/gallery');
+  res.redirect('/admin/gallery#gallery-admin-top');
 });
 
 app.post('/admin/api/gallery/save', (req, res) => {
@@ -339,7 +337,20 @@ app.post('/admin/api/gallery/save', (req, res) => {
   })).filter(a => a.title);
   saveGallery(toSave.map(a => ({ ...a, images: a.images })));
   refreshData();
-  res.redirect('/admin/gallery');
+  res.redirect('/admin/gallery#gallery-admin-top');
+});
+
+app.post('/admin/api/gallery/album/new', (req, res) => {
+  const title = String(req.body.title || '').trim();
+  const newId = addGalleryAlbum(title);
+  refreshData();
+  res.redirect('/admin/gallery#album-' + newId);
+});
+
+app.post('/admin/api/gallery/album/:id/delete', (req, res) => {
+  deleteGalleryAlbum(req.params.id);
+  refreshData();
+  res.redirect('/admin/gallery#gallery-admin-top');
 });
 
 app.post('/admin/api/gallery/album/:id/save', (req, res) => {
@@ -353,13 +364,13 @@ app.post('/admin/api/gallery/album/:id/save', (req, res) => {
   }) : [];
   updateGalleryAlbum(albumId, { title, images });
   refreshData();
-  res.redirect('/admin/gallery');
+  res.redirect('/admin/gallery#album-' + encodeURIComponent(albumId));
 });
 
 app.post('/admin/api/gallery/album/:id/upload', upload.array('photos', 20), async (req, res) => {
   const albumId = req.params.id;
   const album = gallery.find(a => a.id === parseInt(albumId, 10));
-  if (!album || !req.files || req.files.length === 0) return res.redirect('/admin/gallery');
+  if (!album || !req.files || req.files.length === 0) return res.redirect('/admin/gallery#album-' + encodeURIComponent(albumId));
   const baseDir = objectsDir();
   const folderName = album.title.replace(/[/\\]/g, '-');
   const dir = path.join(baseDir, folderName);
@@ -381,24 +392,25 @@ app.post('/admin/api/gallery/album/:id/upload', upload.array('photos', 20), asyn
     addGalleryImages(albumId, newRels);
     refreshData();
   }
-  res.redirect('/admin/gallery');
+  res.redirect('/admin/gallery#album-' + encodeURIComponent(albumId));
 });
 
 app.post('/admin/api/gallery/album/:id/delete-image', (req, res) => {
+  const albumId = req.params.id;
   const { imageUrl } = req.body;
-  if (!imageUrl) return res.redirect('/admin/gallery');
+  if (!imageUrl) return res.redirect('/admin/gallery#album-' + encodeURIComponent(albumId));
   const rel = imageUrl.replace(/^\/assets\/objects\//, '').split('/').map(decodeURIComponent).join(path.sep);
   const filePath = path.join(objectsDir(), rel);
   if (fs.existsSync(filePath)) try { fs.unlinkSync(filePath); } catch (_) {}
-  removeGalleryImage(req.params.id, imageUrl);
+  removeGalleryImage(albumId, imageUrl);
   refreshData();
-  res.redirect('/admin/gallery');
+  res.redirect('/admin/gallery#album-' + encodeURIComponent(albumId));
 });
 
 app.post('/admin/api/gallery/album/:id/delete-images', (req, res) => {
   let urls = req.body.imageUrls;
   if (typeof urls === 'string') try { urls = JSON.parse(urls); } catch (_) { urls = []; }
-  if (!Array.isArray(urls) || urls.length === 0) return res.redirect('/admin/gallery');
+  if (!Array.isArray(urls) || urls.length === 0) return res.redirect('/admin/gallery#album-' + encodeURIComponent(req.params.id));
   const albumId = req.params.id;
   urls.forEach(url => {
     const rel = String(url).replace(/^\/assets\/objects\//, '').split('/').map(decodeURIComponent).join(path.sep);
@@ -407,7 +419,7 @@ app.post('/admin/api/gallery/album/:id/delete-images', (req, res) => {
   });
   removeGalleryImages(albumId, urls);
   refreshData();
-  res.redirect('/admin/gallery');
+  res.redirect('/admin/gallery#album-' + encodeURIComponent(albumId));
 });
 
 app.get('/admin/leads', (req, res) => {
@@ -505,6 +517,12 @@ app.post('/admin/api/catalog/product/:id/save', (req, res) => {
   updateCatalogProduct(productId, { title, category, short, priceFrom, image, gallery });
   refreshData();
   res.redirect('/admin/catalog#product-' + encodeURIComponent(productId));
+});
+
+app.post('/admin/api/catalog/product/:id/delete', (req, res) => {
+  deleteCatalogProduct(req.params.id);
+  refreshData();
+  res.redirect('/admin/catalog#new-product');
 });
 
 app.post('/admin/api/catalog/product/:id/upload', upload.array('photos', 20), async (req, res) => {

@@ -205,6 +205,60 @@ function updateGalleryAlbum(albumId, payload) {
   return true;
 }
 
+function galleryFolderNameFromTitle(title) {
+  return String(title || '').replace(/[/\\]/g, '-').trim() || 'album';
+}
+
+function unlinkObjectImage(rel) {
+  const raw = String(rel || '').trim();
+  if (!raw) return;
+  const fp = path.join(objectsDir(), ...raw.split('/'));
+  if (fs.existsSync(fp)) try { fs.unlinkSync(fp); } catch (_) {}
+}
+
+/** Новый альбом: пустой, папка под заголовок в objects */
+function addGalleryAlbum(title) {
+  const data = loadGalleryRaw();
+  const maxId = data.reduce((m, a) => Math.max(m, typeof a.id === 'number' ? a.id : 0), 0);
+  const id = maxId + 1;
+  const t = String(title || '').trim() || 'Новый объект';
+  const folderName = galleryFolderNameFromTitle(t);
+  const dir = path.join(objectsDir(), folderName);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  data.push({ id, title: t, images: [] });
+  ensureDir(DATA_DIR);
+  fs.writeFileSync(GALLERY_JSON, JSON.stringify(data, null, 2), 'utf8');
+  return id;
+}
+
+/** Удалить альбом из JSON и файлы фото; пустые папки снимаем */
+function deleteGalleryAlbum(albumId) {
+  const data = loadGalleryRaw();
+  const idx = data.findIndex(a => a.id === parseInt(albumId, 10));
+  if (idx < 0) return false;
+  const album = data[idx];
+  const imgs = album.images || [];
+  const dirs = new Set();
+  imgs.forEach(rel => {
+    unlinkObjectImage(rel);
+    const parts = String(rel || '').trim().split('/').filter(Boolean);
+    if (parts.length > 1) dirs.add(path.join(objectsDir(), ...parts.slice(0, -1)));
+  });
+  data.splice(idx, 1);
+  ensureDir(DATA_DIR);
+  fs.writeFileSync(GALLERY_JSON, JSON.stringify(data, null, 2), 'utf8');
+  dirs.forEach(d => {
+    try {
+      if (fs.existsSync(d) && fs.readdirSync(d).length === 0) fs.rmdirSync(d);
+    } catch (_) {}
+  });
+  const fallbackDir = path.join(objectsDir(), galleryFolderNameFromTitle(album.title));
+  try {
+    if (fs.existsSync(fallbackDir) && fs.readdirSync(fallbackDir).length === 0) fs.rmdirSync(fallbackDir);
+  } catch (_) {}
+  return true;
+}
+
 function loadCatalogRaw() {
   let data = [];
   if (fs.existsSync(CATALOG_JSON)) {
@@ -295,6 +349,28 @@ function slugifyCatalogTitle(str) {
     .replace(/-+/g, '-') || 'tovar';
 }
 
+function deleteCatalogProduct(productId) {
+  const data = loadCatalogRaw();
+  const idx = data.findIndex(x => x.id === parseInt(productId, 10));
+  if (idx < 0) return false;
+  const p = data[idx];
+  const dealer = dealerDir();
+  const rels = new Set();
+  (p.gallery || []).forEach(g => {
+    if (g) rels.add(typeof g === 'string' && g.startsWith('/') ? urlToRel(g, ASSETS_CATALOG) : String(g));
+  });
+  if (p.image) rels.add(typeof p.image === 'string' && p.image.startsWith('/') ? urlToRel(p.image, ASSETS_CATALOG) : String(p.image));
+  rels.forEach(rel => {
+    if (!rel || rel.startsWith('http')) return;
+    const fp = path.join(dealer, ...rel.split('/'));
+    if (fs.existsSync(fp)) try { fs.unlinkSync(fp); } catch (_) {}
+  });
+  data.splice(idx, 1);
+  ensureDir(DATA_DIR);
+  fs.writeFileSync(CATALOG_JSON, JSON.stringify(data, null, 2), 'utf8');
+  return true;
+}
+
 function addCatalogProduct(payload) {
   const data = loadCatalogRaw();
   const maxId = data.reduce((m, x) => Math.max(m, typeof x.id === 'number' ? x.id : 0), 0);
@@ -361,6 +437,9 @@ module.exports = {
   removeCatalogImages,
   updateCatalogProduct,
   addCatalogProduct,
+  deleteCatalogProduct,
+  addGalleryAlbum,
+  deleteGalleryAlbum,
   GALLERY_JSON,
   CATALOG_JSON,
   ASSETS_OBJECTS,

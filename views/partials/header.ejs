@@ -4,9 +4,17 @@
       <span class="brand__logo" aria-hidden="true"></span>
       <span class="brand__text">
         <span class="brand__name"><%= site.brand.name %></span>
-        <span class="brand__tag"><%= site.brand.tagline %></span>
       </span>
     </a>
+
+    <% const _phoneDigits = site.contacts.phones && site.contacts.phones[0] ? site.contacts.phones[0].value.replace(/\D/g,'') : ''; %>
+    <% if (_phoneDigits) { %>
+    <a class="header__call-mobile" href="tel:+7<%= _phoneDigits %>" aria-label="Позвонить<%= site.contacts.phones[0] ? ': ' + formatPhone(site.contacts.phones[0].value) : '' %>">
+      <svg class="header__call-mobile-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="currentColor"/>
+      </svg>
+    </a>
+    <% } %>
 
     <nav class="nav" aria-label="Основное меню">
       <button class="nav__toggle" type="button" data-nav-toggle aria-label="Открыть меню">

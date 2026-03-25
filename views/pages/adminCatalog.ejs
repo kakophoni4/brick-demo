@@ -49,6 +49,10 @@
       </div>
     </form>
 
+    <form method="post" action="/admin/api/catalog/product/<%= p.id %>/delete" style="margin-bottom: 12px;" onsubmit="return confirm('Удалить этот товар из каталога и файлы его фото с диска?');">
+      <button type="submit" class="btn btn--ghost btn--danger">Удалить товар целиком</button>
+    </form>
+
     <form method="post" action="/admin/api/catalog/product/<%= p.id %>/upload" enctype="multipart/form-data" style="margin-bottom: 12px;">
       <label class="admin-upload-zone">
         <input type="file" name="photos" multiple accept=".jpg,.jpeg,.png,.gif,.webp" class="admin-upload-input">

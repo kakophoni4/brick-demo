@@ -50,7 +50,7 @@
       <h2 class="h2">Популярные категории</h2>
     </div>
 
-    <div class="catgrid">
+    <div class="catgrid catgrid--hscroll">
       <% categories.forEach(c => { %>
         <a class="card cat" href="/catalog?cat=<%= encodeURIComponent(c) %>">
           <div class="cat__title"><%= c %></div>
@@ -68,7 +68,7 @@
       <p class="muted">Цена: уточняйте по телефону.</p>
     </div>
 
-    <div class="grid">
+    <div class="grid grid--hscroll">
       <% bestsellers.forEach(p => { %>
         <%- include('../partials/productCard', { p }) %>
       <% }) %>
@@ -119,7 +119,7 @@
       <p class="muted">Фото объектов — помогает выбрать оттенок и фактуру “вживую”.</p>
     </div>
 
-    <div class="gallerygrid">
+    <div class="gallerygrid gallerygrid--hscroll">
       <% galleryPreview.forEach(item => { %>
         <%- include('../partials/galleryCard', { item }) %>
       <% }) %>

@@ -25,26 +25,6 @@
         </label>
 
         <label class="field">
-          <span class="field__label">Цвет</span>
-          <select name="color">
-            <option value="">Любой</option>
-            <% ['графит','шоколад','терракота','айвори','солома','красный','серый'].forEach(v => { %>
-              <option value="<%= v %>" <%= filters.color===v?'selected':'' %>><%= v %></option>
-            <% }) %>
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field__label">Формат</span>
-          <select name="format">
-            <option value="">Любой</option>
-            <% ['0,7NF','1NF','1,4NF','2,1NF','10,7NF','12,4NF','5,7NF'].forEach(v => { %>
-              <option value="<%= v %>" <%= filters.format===v?'selected':'' %>><%= v %></option>
-            <% }) %>
-          </select>
-        </label>
-
-        <label class="field">
           <span class="field__label">Сортировка</span>
           <select name="price">
             <option value="">По умолчанию</option>
@@ -66,7 +46,7 @@
   </section>
 
   <section class="section section--tight">
-    <div class="grid">
+    <div class="grid grid--hscroll">
       <% items.forEach(p => { %>
         <%- include('../partials/productCard', { p }) %>
       <% }) %>
