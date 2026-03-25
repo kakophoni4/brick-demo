@@ -1,5 +1,5 @@
 <article class="card product" data-product-id="<%= p.id %>">
-  <a class="product__media-link" href="/catalog/<%= p.slug %>">
+  <div class="product__media-head">
     <div class="product__media product__media--carousel">
       <% const imgs = p.gallery && p.gallery.length ? p.gallery : [p.image]; %>
       <% imgs.forEach((img, idx) => { %>
@@ -9,9 +9,9 @@
         <button type="button" class="product__carousel-prev" aria-label="Предыдущее фото" data-product-prev>‹</button>
         <button type="button" class="product__carousel-next" aria-label="Следующее фото" data-product-next>›</button>
       <% } %>
+      <% if (p.isBestseller) { %><span class="badge">Хит</span><% } %>
     </div>
-    <% if (p.isBestseller) { %><span class="badge">Хит</span><% } %>
-  </a>
+  </div>
 
   <div class="product__body">
     <h3 class="product__title">

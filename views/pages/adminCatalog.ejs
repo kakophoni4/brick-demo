@@ -1,7 +1,7 @@
 <div class="container">
   <section class="admin-pagehead">
     <h1 class="h1">Каталог</h1>
-    <p class="muted">Товары из папки «акбарс керамик для дилеров web». Сохраняйте изменения по каждому товару отдельно.</p>
+    <p class="muted">Товары из папки «акбарс керамик для дилеров web». У каждого товара — «Сохранить» сверху и снизу блока.</p>
     <% if (typeof err !== 'undefined' && err) { %> 
       <p class="muted" style="color: var(--brand2);">Ошибка импорта. Проверьте путь к папке.</p>
     <% } %>
@@ -13,9 +13,26 @@
     </form>
   </div>
 
+  <div class="admin-block admin-block--new" id="new-product">
+    <h2 class="h3" style="margin-top: 0;">Добавить товар</h2>
+    <form method="post" action="/admin/api/catalog/product/new">
+      <div class="admin-block__head" style="flex-wrap: wrap;">
+        <input type="text" name="title" required class="admin-block__title" placeholder="Название *" style="min-width: 200px;">
+        <select name="category" style="padding: 10px 14px; border: 1px solid rgba(0,0,0,.12); border-radius: 10px; font-size: 14px;">
+          <% categories.forEach(c => { %>
+            <option value="<%= c %>"><%= c %></option>
+          <% }) %>
+        </select>
+        <input type="text" name="short" placeholder="Кратко" style="padding: 10px 14px; border: 1px solid rgba(0,0,0,.12); border-radius: 10px; font-size: 14px; min-width: 180px;">
+        <input type="number" name="priceFrom" placeholder="Цена от" min="0" step="1" style="padding: 10px 14px; border: 1px solid rgba(0,0,0,.12); border-radius: 10px; font-size: 14px; width: 100px;">
+      </div>
+      <button type="submit" class="btn" style="margin-top: 12px;">Создать товар</button>
+    </form>
+  </div>
+
   <% items.forEach((p) => { %>
-  <div class="admin-block" data-product-id="<%= p.id %>">
-    <form method="post" action="/admin/api/catalog/product/<%= p.id %>/save" class="admin-block__form">
+  <div class="admin-block" id="product-<%= p.id %>" data-product-id="<%= p.id %>">
+    <form method="post" action="/admin/api/catalog/product/<%= p.id %>/save" class="admin-block__form" id="catalog-form-<%= p.id %>">
       <input type="hidden" name="gallery" class="admin-block__gallery-input" value="<%= JSON.stringify(p.gallery || []) %>">
       <div class="admin-block__head" style="flex-wrap: wrap;">
         <input type="text" name="title" value="<%= p.title %>" class="admin-block__title" placeholder="Название" style="min-width: 200px;">
@@ -55,7 +72,13 @@
       </div>
       <% }) %>
     </div>
+    <% } else { %>
+    <p class="muted small">Фото пока нет — загрузите через «Добавить фото».</p>
     <% } %>
+
+    <div class="admin-block__footer-save">
+      <button type="submit" class="btn admin-block__save" form="catalog-form-<%= p.id %>">Сохранить товар</button>
+    </div>
   </div>
   <% }) %>
 
@@ -107,7 +130,7 @@
         if (uploadInput) uploadInput.addEventListener('change', function() { if (this.files && this.files.length) uploadForm.submit(); });
       }
     }
-    document.querySelectorAll('.admin-block').forEach(initBlock);
+    document.querySelectorAll('.admin-block[data-product-id]').forEach(initBlock);
 
     window.adminCatalogConfirmDelete = function(btn) {
       var form = btn.closest('.admin-delete-form');
@@ -126,6 +149,12 @@
         form.querySelector('.admin-delete-urls-input').value = JSON.stringify(urls);
       });
     });
+
+    if (location.hash && document.querySelector(location.hash)) {
+      setTimeout(function() {
+        document.querySelector(location.hash).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   })();
   </script>
 </div>

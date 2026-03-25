@@ -1,12 +1,8 @@
 <div class="container">
   <section class="admin-pagehead">
     <h1 class="h1">Заявки</h1>
-    <p class="muted">Заявки с форм сайта и из CRM (webhook). Новые сверху.</p>
+    <p class="muted">Заявки с форм сайта. Новые сверху.</p>
   </section>
-
-  <div class="card pad">
-    <p class="muted small">Webhook для CRM: <code>POST /api/lead/webhook</code>. Тело: <code>name</code>, <code>phone</code>, <code>message</code>, <code>source</code>. Опционально: заголовок <code>X-Crm-Token</code> или параметр <code>token</code> — задайте <code>CRM_WEBHOOK_TOKEN</code> в окружении.</p>
-  </div>
 
   <% if (!leads || leads.length === 0) { %>
   <div class="card pad" style="margin-top: 16px;">

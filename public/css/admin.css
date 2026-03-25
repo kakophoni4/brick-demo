@@ -144,6 +144,21 @@
   display: block;
 }
 
+.admin-photos--catalog {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.admin-photos--catalog .admin-photo__img {
+  height: 160px;
+}
+
+.admin-block__footer-save {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,.08);
+}
+
 .admin-photo__chk {
   position: absolute;
   top: 6px;
@@ -189,6 +204,7 @@
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 4px 14px rgba(0,0,0,.04);
+  scroll-margin-top: 20px;
 }
 
 .admin-block__head {

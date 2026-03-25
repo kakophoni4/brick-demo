@@ -84,13 +84,13 @@
     });
   });
 
-  // Карусель фото в карточках каталога (свайп и кнопки)
+  // Карусель фото в карточках каталога (кнопки, свайп, клик влево/вправо)
   document.querySelectorAll('.product__media--carousel').forEach(carousel => {
     const imgs = carousel.querySelectorAll('.product__media-img');
     if (imgs.length <= 1) return;
     const card = carousel.closest('.product');
-    const prevBtn = card.querySelector('[data-product-prev]');
-    const nextBtn = card.querySelector('[data-product-next]');
+    const prevBtn = card && card.querySelector('[data-product-prev]');
+    const nextBtn = card && card.querySelector('[data-product-next]');
     let idx = 0;
     function show(i) {
       idx = (i + imgs.length) % imgs.length;
@@ -105,6 +105,14 @@
       e.preventDefault();
       e.stopPropagation();
       show(idx + 1);
+    });
+    carousel.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      const rect = carousel.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      if (!rect.width) return;
+      if (cx < rect.width / 2) show(idx - 1);
+      else show(idx + 1);
     });
     let startX = 0;
     let moved = false;
@@ -121,5 +129,59 @@
       if (endX < startX - 30) show(idx + 1);
       else if (endX > startX + 30) show(idx - 1);
     });
+  });
+
+  // Страница товара: галерея без открытия в новой вкладке
+  document.querySelectorAll('[data-product-page-gallery]').forEach((root) => {
+    const main = root.querySelector('[data-product-page-main]');
+    const jsonEl = root.querySelector('[data-product-page-photos]');
+    if (!main || !jsonEl) return;
+    let photos;
+    try {
+      photos = JSON.parse(jsonEl.textContent);
+    } catch (_) {
+      return;
+    }
+    if (!Array.isArray(photos) || photos.length <= 1) return;
+    const thumbs = root.querySelectorAll('[data-product-page-thumb]');
+    let idx = 0;
+    function show(i) {
+      idx = (i + photos.length) % photos.length;
+      main.src = photos[idx];
+      thumbs.forEach((t, k) => t.classList.toggle('is-active', k === idx));
+    }
+    thumbs.forEach((t, k) => {
+      t.addEventListener('click', () => show(k));
+    });
+    const prev = root.querySelector('[data-product-page-prev]');
+    const next = root.querySelector('[data-product-page-next]');
+    if (prev) prev.addEventListener('click', () => show(idx - 1));
+    if (next) next.addEventListener('click', () => show(idx + 1));
+    const mainWrap = root.querySelector('.productmedia__img--carousel');
+    if (mainWrap) {
+      let startX = 0;
+      let moved = false;
+      mainWrap.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        moved = false;
+      }, { passive: true });
+      mainWrap.addEventListener('touchmove', (e) => {
+        if (Math.abs(e.touches[0].clientX - startX) > 30) moved = true;
+      }, { passive: true });
+      mainWrap.addEventListener('touchend', (e) => {
+        if (!moved) return;
+        const endX = e.changedTouches[0].clientX;
+        if (endX < startX - 30) show(idx + 1);
+        else if (endX > startX + 30) show(idx - 1);
+      });
+      mainWrap.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        const rect = mainWrap.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        if (!rect.width) return;
+        if (cx < rect.width / 2) show(idx - 1);
+        else show(idx + 1);
+      });
+    }
   });
 })();

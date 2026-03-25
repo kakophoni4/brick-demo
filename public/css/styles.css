@@ -285,7 +285,7 @@ a:hover { text-decoration: underline; }
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
-.product__media-link{
+.product__media-head{
   display: block;
   position: relative;
 }
@@ -525,7 +525,7 @@ a:hover { text-decoration: underline; }
 }
 
 /* ====== Формы (чтобы ничего не наезжало) ====== */
-.form{ display: grid; gap: 12px; }
+.form{ display: grid; gap: 16px; }
 .form__row{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -533,6 +533,17 @@ a:hover { text-decoration: underline; }
 }
 .field{ display: grid; gap: 6px; }
 .field__label{ font-size: 12.5px; color: var(--muted2); }
+/* Карточка + форма: overflow:hidden ломает сетку и наезжает кнопка на textarea */
+.card.form{
+  overflow: visible;
+  padding: 16px;
+}
+.form > .btn{
+  margin-top: 4px;
+}
+.form > .muted.small{
+  margin-top: -4px;
+}
 input, select, textarea{
   width: 100%;
   border: var(--b);
@@ -542,7 +553,7 @@ input, select, textarea{
   outline: none;
   background: #fff;
 }
-textarea{ resize: vertical; min-height: 90px; max-height: 260px; }
+textarea{ resize: vertical; min-height: 90px; max-height: 260px; box-sizing: border-box; }
 input:focus, select:focus, textarea:focus{
   border-color: rgba(31,112,189,.45);
   box-shadow: 0 0 0 4px rgba(31,112,189,.12);
@@ -577,28 +588,63 @@ input:focus, select:focus, textarea:focus{
   overflow: hidden;
   background: #eee;
 }
+.productmedia__img--carousel{
+  cursor: default;
+}
 .productmedia__img img{
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+.productmedia__nav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.15);
+  background: rgba(255,255,255,.92);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.productmedia__nav--prev{ left: 10px; }
+.productmedia__nav--next{ right: 10px; }
+.productmedia__nav:hover{ background: #fff; }
 .productmedia__thumbs{
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: 8px;
   padding: 10px;
   border-top: var(--b);
 }
-.thumb{
+button.thumb{
+  display: block;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  border: var(--b);
+  border: 2px solid rgba(0,0,0,.1);
   aspect-ratio: 1 / 1;
 }
-.thumb img{
+button.thumb.is-active{
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px rgba(31,112,189,.2);
+}
+button.thumb img{
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+  pointer-events: none;
 }
 .pricebox{
   border: var(--b);
@@ -659,17 +705,21 @@ input:focus, select:focus, textarea:focus{
 .modal__panel{
   position: relative;
   width: min(560px, calc(100% - 24px));
-  margin: 60px auto;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  margin: 16px auto;
   background: #fff;
   border-radius: 22px;
   border: var(--b);
   box-shadow: 0 30px 80px rgba(0,0,0,.30);
-  padding: 16px;
+  padding: 52px 18px 20px;
+  box-sizing: border-box;
 }
 .modal__close{
   position: absolute;
   right: 10px;
   top: 10px;
+  z-index: 2;
   width: 40px;
   height: 40px;
   border-radius: 14px;

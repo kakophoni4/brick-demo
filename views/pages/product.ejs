@@ -7,18 +7,26 @@
 
   <section class="productpage">
     <div class="productpage__grid">
-      <div class="card productmedia">
-        <div class="productmedia__img">
-          <img src="<%= product.image %>" alt="<%= product.title %>">
+      <div class="card productmedia" data-product-page-gallery>
+        <div class="productmedia__img productmedia__img--carousel">
+          <% const pageGallery = (product.gallery && product.gallery.length) ? product.gallery : (product.image ? [product.image] : []); %>
+          <img data-product-page-main src="<%= pageGallery[0] || product.image %>" alt="<%= product.title %>">
           <% if (product.isBestseller) { %><span class="badge">Хит</span><% } %>
+          <% if (pageGallery.length > 1) { %>
+          <button type="button" class="productmedia__nav productmedia__nav--prev" data-product-page-prev aria-label="Предыдущее фото">‹</button>
+          <button type="button" class="productmedia__nav productmedia__nav--next" data-product-page-next aria-label="Следующее фото">›</button>
+          <% } %>
         </div>
+        <% if (pageGallery.length > 1) { %>
         <div class="productmedia__thumbs">
-          <% product.gallery.slice(0, 5).forEach(img => { %>
-            <a class="thumb" href="<%= img %>" target="_blank" rel="noreferrer">
+          <% pageGallery.forEach((img, ti) => { %>
+            <button type="button" class="thumb<%= ti === 0 ? ' is-active' : '' %>" data-product-page-thumb data-index="<%= ti %>" aria-label="Фото <%= ti + 1 %>">
               <img src="<%= img %>" alt="">
-            </a>
+            </button>
           <% }) %>
         </div>
+        <script type="application/json" data-product-page-photos><%- JSON.stringify(pageGallery) %></script>
+        <% } %>
       </div>
 
       <div class="card pad">
@@ -49,7 +57,6 @@
   <section class="section section--tight">
     <div class="section__head">
       <h2 class="h2">Похожие товары</h2>
-      <p class="muted">Подборка по категории — удобно для сравнения.</p>
     </div>
     <div class="grid">
       <% related.forEach(p => { %>

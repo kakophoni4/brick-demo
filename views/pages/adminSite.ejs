@@ -1,0 +1,65 @@
+<div class="container">
+  <section class="admin-pagehead">
+    <h1 class="h1">Контакты на сайте</h1>
+    <p class="muted">Телефоны, почта, адрес и график отображаются в шапке, подвале и на странице «Контакты». Данные сохраняются в файл <code>src/data/siteUser.json</code>.</p>
+    <% if (typeof saved !== 'undefined' && saved) { %>
+      <p class="muted" style="color: #1a7f37;">Сохранено.</p>
+    <% } %>
+    <% if (typeof saveError !== 'undefined' && saveError) { %>
+      <p class="muted" style="color: var(--brand2);">Не удалось записать файл (права на папку или диск только для чтения). Проверьте сервер или локально файл <code>src/data/siteUser.json</code>.</p>
+    <% } %>
+  </section>
+
+  <form class="admin-block" method="post" action="/admin/api/site/save">
+    <h2 class="h3" style="margin-top: 0;">Телефоны</h2>
+    <p class="muted small">Можно вводить с +7, скобками и пробелами — сохраним 10 цифр номера. Отображение +7(…) на сайте подставится само.</p>
+    <div style="display: grid; gap: 12px; max-width: 480px;">
+      <label class="field">
+        <span class="field__label">Телефон 1 *</span>
+        <input type="text" name="phone1" required value="<%= phone1 %>" placeholder="9603721919" maxlength="15">
+      </label>
+      <label class="field">
+        <span class="field__label">Подпись к тел. 1 (необязательно)</span>
+        <input type="text" name="phone1_label" value="<%= phone1Label %>" placeholder="например: отдел продаж">
+      </label>
+      <label class="field">
+        <span class="field__label">Телефон 2</span>
+        <input type="text" name="phone2" value="<%= phone2 %>" placeholder="9673765076" maxlength="15">
+      </label>
+      <label class="field">
+        <span class="field__label">Подпись к тел. 2</span>
+        <input type="text" name="phone2_label" value="<%= phone2Label %>">
+      </label>
+    </div>
+
+    <h2 class="h3" style="margin-top: 24px;">Почта</h2>
+    <label class="field" style="max-width: 480px;">
+      <span class="field__label">Email</span>
+      <input type="email" name="email" required value="<%= email %>" placeholder="kirpich73uln@mail.ru">
+    </label>
+
+    <h2 class="h3" style="margin-top: 24px;">Адрес</h2>
+    <div style="display: grid; gap: 12px; max-width: 520px;">
+      <label class="field">
+        <span class="field__label">Заголовок блока</span>
+        <input type="text" name="address_title" value="<%= addr.title %>">
+      </label>
+      <label class="field">
+        <span class="field__label">Строка 1 (город)</span>
+        <input type="text" name="address_line1" value="<%= addr.line1 %>" placeholder="г. Ульяновск">
+      </label>
+      <label class="field">
+        <span class="field__label">Строка 2 (улица, дом)</span>
+        <input type="text" name="address_line2" value="<%= addr.line2 %>" placeholder="проспект Нариманова, 103">
+      </label>
+    </div>
+
+    <h2 class="h3" style="margin-top: 24px;">График работы</h2>
+    <label class="field" style="max-width: 520px;">
+      <span class="field__label">Каждая строка — отдельная строка на сайте</span>
+      <textarea name="worktime" rows="4" style="width:100%;"><%= worktime %></textarea>
+    </label>
+
+    <button type="submit" class="btn" style="margin-top: 20px;">Сохранить</button>
+  </form>
+</div>

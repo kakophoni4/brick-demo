@@ -92,6 +92,7 @@ function loadCatalog() {
     }
   }
   return data.map(p => {
+    const category = p.category === 'Клинкер и ступени' ? 'Кирпич рядовой' : p.category;
     const allImages = (p.gallery || (p.image ? [p.image] : [])).filter(Boolean);
     const existing = allImages.filter(rel => {
       const raw = String(rel).trim();
@@ -112,6 +113,7 @@ function loadCatalog() {
     const gallery = existing.map(toUrl);
     return {
       ...p,
+      category,
       image: image || (p.image && p.image.startsWith('http') ? p.image : ''),
       gallery
     };
@@ -217,6 +219,9 @@ function getCatalogProductFolder(productId) {
   const data = loadCatalogRaw();
   const p = data.find(x => x.id === parseInt(productId, 10));
   if (!p) return null;
+  if (p.catalogFolder && String(p.catalogFolder).trim()) {
+    return String(p.catalogFolder).trim().replace(/[/\\]/g, '-');
+  }
   const img = p.image || (p.gallery && p.gallery[0]);
   if (!img) return null;
   const rel = typeof img === 'string' && img.startsWith('/') ? urlToRel(img, ASSETS_CATALOG) : img;
@@ -280,6 +285,56 @@ function updateCatalogProduct(productId, payload) {
   return true;
 }
 
+function slugifyCatalogTitle(str) {
+  return String(str || '')
+    .toLowerCase()
+    .replace(/ё/g, 'е')
+    .replace(/[^a-z0-9а-я\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-') || 'tovar';
+}
+
+function addCatalogProduct(payload) {
+  const data = loadCatalogRaw();
+  const maxId = data.reduce((m, x) => Math.max(m, typeof x.id === 'number' ? x.id : 0), 0);
+  const id = maxId + 1;
+  const title = String(payload.title || 'Новый товар').trim() || 'Новый товар';
+  const category = String(payload.category || 'Кирпич облицовочный').trim();
+  const short = String(payload.short || '').trim();
+  const priceFrom = payload.priceFrom === '' || payload.priceFrom == null ? null : (isNaN(Number(payload.priceFrom)) ? null : Number(payload.priceFrom));
+  const slug = slugifyCatalogTitle(title) + '-' + id;
+  const catalogFolder = slugifyCatalogTitle(title).slice(0, 48).replace(/-+$/g, '') + '-' + id;
+  const baseDir = dealerDir();
+  const dir = path.join(baseDir, catalogFolder);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const p = {
+    id,
+    slug,
+    title,
+    category,
+    image: '',
+    gallery: [],
+    short,
+    description: String(payload.description || '').trim() || short,
+    specs: [['Наименование', title], ['Цена', 'Уточняйте по телефону']],
+    color: '',
+    format: '',
+    tags: [],
+    priceFrom,
+    priceRub: null,
+    unit: 'шт.',
+    availability: 'В наличии',
+    isFeatured: false,
+    isBestseller: false,
+    catalogFolder
+  };
+  data.push(p);
+  ensureDir(DATA_DIR);
+  fs.writeFileSync(CATALOG_JSON, JSON.stringify(data, null, 2), 'utf8');
+  return p;
+}
+
 function importCatalogFromScan() {
   const data = scanCatalog();
   ensureDir(DATA_DIR);
@@ -305,6 +360,7 @@ module.exports = {
   removeCatalogImage,
   removeCatalogImages,
   updateCatalogProduct,
+  addCatalogProduct,
   GALLERY_JSON,
   CATALOG_JSON,
   ASSETS_OBJECTS,
