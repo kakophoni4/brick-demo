@@ -808,43 +808,12 @@ button.thumb img{
     scroll-snap-align: start;
     min-width: 0;
   }
-
-  .gallerygrid.gallerygrid--hscroll{
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 8px;
-    margin-bottom: 4px;
-  }
-  .gallerygrid.gallerygrid--hscroll > *{
-    flex: 0 0 min(220px, 72vw);
-    scroll-snap-align: start;
-    min-width: 0;
-  }
-
-  .catgrid.catgrid--hscroll{
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 8px;
-  }
-  .catgrid.catgrid--hscroll > *{
-    flex: 0 0 min(200px, 70vw);
-    scroll-snap-align: start;
-    min-width: 0;
-  }
 }
 
 @media (max-width: 560px){
-  .catgrid:not(.catgrid--hscroll){ grid-template-columns: 1fr; }
-  .grid:not(.grid--hscroll){ grid-template-columns: 1fr; }
-  .gallerygrid:not(.gallerygrid--hscroll){ grid-template-columns: repeat(2, 1fr); }
+  .catgrid{ grid-template-columns: repeat(2, 1fr); }
+  .grid:not(.grid--hscroll){ grid-template-columns: repeat(2, 1fr); }
+  .gallerygrid{ grid-template-columns: repeat(2, 1fr); }
   .form__row{ grid-template-columns: 1fr; }
   .footer__grid{ grid-template-columns: 1fr; }
 }
