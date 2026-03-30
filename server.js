@@ -70,6 +70,11 @@ app.use('/public', express.static(path.join(__dirname, 'public'), {
   maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0
 }));
 
+app.get('/yandex_1d0c72b8ee84e73f.html', (req, res) => {
+  res.type('text/html; charset=UTF-8');
+  res.sendFile(path.join(__dirname, 'yandex_1d0c72b8ee84e73f.html'));
+});
+
 const objectsPath = objectsDir();
 const dealerPath = dealerDir();
 [objectsPath, dealerPath].forEach(p => {
